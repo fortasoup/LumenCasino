@@ -318,6 +318,9 @@ h3{margin:0; font-size:15px; font-weight:600}
       <div><span class="lbl">Balance</span><b id="bal">0</b></div>
       <span class="float" id="balFloat"></span>
     </div>
+    <button class="btn ghost" id="sndBtn" title="Sound on / off" aria-label="Sound on or off" style="padding:10px 12px">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M4 9.500h3l4-3.500v12l-4-3.500H4z"/><path id="sndOn" d="M15 9a4 4 0 0 1 0 6M17.500 6.500a7.500 7.500 0 0 1 0 11"/><path id="sndOff" d="M15.500 9.500l5 5M20.500 9.500l-5 5"/></svg>
+    </button>
     <button class="btn ghost" id="refill" title="Reset balance to 1,000 play credits">Refill</button>
   </header>
 
@@ -565,6 +568,87 @@ function fxTick() {
   if (fxP.length) requestAnimationFrame(fxTick); else { fxRun = false; fxc.clearRect(0, 0, w, h); }
 }
 
+/* ---------- sound: every effect is synthesised with Web Audio, so there are no sound files ---------- */
+const SND = { on: store.get('sound') !== '0', ctx: null, master: null, buf: null, lastChip: 0, hum: null };
+function ac() {
+  if (!SND.on) return null;
+  if (!SND.ctx) {
+    const C = window.AudioContext || window.webkitAudioContext; if (!C) return null;
+    SND.ctx = new C(); SND.master = SND.ctx.createGain(); SND.master.gain.value = .6; SND.master.connect(SND.ctx.destination);
+  }
+  if (SND.ctx.state === 'suspended') SND.ctx.resume();
+  return SND.ctx;
+}
+// a pitched blip: freq in Hz, dur in seconds, optional glide to another pitch
+function tone(freq, dur, { type = 'sine', vol = .1, at = 0, to = null } = {}) {
+  const c = ac(); if (!c) return;
+  const t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g); g.connect(SND.master); o.start(t); o.stop(t + dur + .03);
+}
+// a filtered burst of noise: swishes, clacks and thuds
+function noise(dur, { vol = .1, at = 0, freq = 2000, to = null, q = 1, type = 'bandpass' } = {}) {
+  const c = ac(); if (!c) return;
+  if (!SND.buf) { const b = c.createBuffer(1, c.sampleRate, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; SND.buf = b; }
+  const t = c.currentTime + at, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = SND.buf; s.loop = true; f.type = type; f.Q.value = q; f.frequency.setValueAtTime(freq, t);
+  if (to) f.frequency.exponentialRampToValueAtTime(to, t + dur);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  s.connect(f); f.connect(g); g.connect(SND.master); s.start(t, Math.random() * .5); s.stop(t + dur + .03);
+}
+const sfx = {
+  click() { tone(700, .035, { vol: .05 }); },
+  chip() {
+    const n = performance.now(); if (n - SND.lastChip < 45) return; SND.lastChip = n;
+    noise(.03, { vol: .12, freq: 4200, q: 2 }); tone(2300 + Math.random() * 300, .05, { type: 'triangle', vol: .07 }); tone(3400, .03, { vol: .03, at: .012 });
+  },
+  card() { noise(.11, { vol: .16, freq: 2600, to: 900, q: .8 }); tone(180, .04, { vol: .05, at: .07 }); },
+  flip() { noise(.07, { vol: .12, freq: 1500, to: 3200 }); tone(220, .05, { vol: .05, at: .05 }); },
+  shuffle() { for (let i = 0; i < 14; i++) noise(.05, { vol: .09, freq: 2000 + Math.random() * 1500, at: i * .075 + Math.random() * .02 }); },
+  win(big, at = 0) {
+    (big ? [523, 659, 784, 1047, 1319, 1568] : [523, 659, 784, 1047]).forEach((f, i) => {
+      tone(f, .38, { type: 'triangle', vol: .11, at: at + i * .085 }); tone(f * 2, .3, { vol: .03, at: at + i * .085 });
+    });
+  },
+  lose(at = 0) { tone(294, .22, { vol: .08, at }); tone(220, .34, { vol: .08, at: at + .16 }); },
+  push() { tone(440, .16, { vol: .06 }); tone(440, .16, { vol: .06, at: .18 }); },
+  spin() { noise(.7, { vol: .07, freq: 500, to: 1800, q: .7 }); },
+  tick(k) { tone(1500 + Math.random() * 250, .02, { type: 'triangle', vol: .03 + .05 * k }); },
+  drop() { noise(.05, { vol: .14, freq: 3000, q: 2 }); tone(1250, .07, { type: 'triangle', vol: .08 }); tone(900, .09, { type: 'triangle', vol: .06, at: .07 }); },
+  coinFlip() { tone(2637, .5, { vol: .07 }); tone(3951, .4, { vol: .04 }); for (let i = 0; i < 9; i++) noise(.03, { vol: .035, freq: 3000, q: 3, at: .12 + i * .11 }); },
+  coinLand() { noise(.07, { vol: .14, freq: 500, q: .8, type: 'lowpass' }); tone(2093, .3, { vol: .06, at: .02 }); tone(3136, .22, { vol: .03, at: .02 }); },
+  cascade() { for (let i = 0; i < 16; i++) tone(1200 + i * 90 + Math.random() * 60, .05, { type: 'triangle', vol: .04, at: i * .07 }); },
+  collect() { [784, 988, 1175, 1568].forEach((f, i) => tone(f, .3, { type: 'triangle', vol: .09, at: i * .06 })); },
+  crash(soft) { tone(420, .6, { type: 'sawtooth', vol: soft ? .03 : .07, to: 55 }); noise(.45, { vol: soft ? .04 : .1, freq: 900, to: 150, q: .6 }); },
+  // Drift: a soft hum that rises in pitch with the multiplier
+  driftStart() {
+    const c = ac(); if (!c) return; sfx.driftStop();
+    const o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o2.type = 'triangle'; o.frequency.value = 160; o2.frequency.value = 240;
+    g.gain.setValueAtTime(.0001, c.currentTime); g.gain.exponentialRampToValueAtTime(.06, c.currentTime + .4);
+    o.connect(g); o2.connect(g); g.connect(SND.master); o.start(); o2.start(); SND.hum = { o, o2, g };
+  },
+  driftUpdate(m) {
+    const h = SND.hum; if (!h) return; const t = SND.ctx.currentTime, f = Math.min(1400, 160 * Math.pow(m, .55));
+    h.o.frequency.setTargetAtTime(f, t, .05); h.o2.frequency.setTargetAtTime(f * 1.5, t, .05);
+  },
+  driftStop() {
+    const h = SND.hum; if (!h) return; SND.hum = null; const t = SND.ctx.currentTime;
+    h.g.gain.cancelScheduledValues(t); h.g.gain.setTargetAtTime(.0001, t, .03); h.o.stop(t + .25); h.o2.stop(t + .25);
+  }
+};
+for (const k in sfx) { const f = sfx[k]; sfx[k] = (...a) => { try { f(...a); } catch {} }; }   // a sound must never break a game
+function sndUI() { $('#sndOn').style.display = SND.on ? '' : 'none'; $('#sndOff').style.display = SND.on ? 'none' : ''; $('#sndBtn').style.color = SND.on ? '' : 'var(--faint)'; }
+$('#sndBtn').onclick = () => { SND.on = !SND.on; store.set('sound', SND.on ? '1' : '0'); if (!SND.on) sfx.driftStop(); sndUI(); toast(SND.on ? 'Sound on' : 'Sound off'); };
+sndUI();
+// every button and chip gets a soft click
+document.addEventListener('click', e => {
+  const b = e.target.closest('button, .game, .wallet, .brand'); if (!b || b.disabled || b.classList.contains('cell')) return;
+  if (b.matches('.chipc')) sfx.chip(); else sfx.click();
+}, true);
+
 /* ---------- navigation ---------- */
 const TITLES = {
   lobby: ['Lobby', 'Three quiet tables. Take it slow.'],
@@ -708,6 +792,7 @@ function bjEnd(text, cls, payout) {
   if (payout) setBalance(balance + payout);
   record('blackjack', payout - BJ.bet);
   say('#bjMsg', text, cls); bjRender();
+  if (cls === 'good') sfx.win(payout >= BJ.bet * 2.5, .15); else if (cls === 'bad') sfx.lose(.15); else sfx.push();
   if (cls !== 'info') flash($('#felt'), cls === 'good' ? 'win' : 'lose');
 }
 async function bjDeal(override) {
@@ -720,11 +805,11 @@ async function bjDeal(override) {
   bjRender();
   if (BJ.shoe.length <= SHOE_CUT) {
     say('#bjMsg', `Only ${BJ.shoe.length} cards left — shuffling the shoe…`);
-    await sleep(1400);
+    sfx.shuffle(); await sleep(1400);
     BJ.shoe = newShoe(); BJ.base = 0; bjShoeUI(); bjCountUI();
   }
   say('#bjMsg', 'Dealing…');
-  for (const h of [BJ.p, BJ.d, BJ.p, BJ.d]) { h.push(bjDraw()); bjRender(); await sleep(340); }
+  for (const h of [BJ.p, BJ.d, BJ.p, BJ.d]) { h.push(bjDraw()); sfx.card(); bjRender(); await sleep(340); }
   const pv = bjVal(BJ.p), dv = bjVal(BJ.d);
   if (pv === 21 && dv === 21) return bjEnd('Both have blackjack — push.', 'info', bet);
   if (pv === 21) return bjEnd(`Blackjack! +${fmt(bet * 1.5)}`, 'good', bet * 2.5);
@@ -733,9 +818,9 @@ async function bjDeal(override) {
 }
 async function bjStand() {
   if (BJ.phase !== 'player') return;
-  BJ.phase = 'dealer'; BJ.hide = false; say('#bjMsg', 'Dealer plays…'); bjRender();
+  BJ.phase = 'dealer'; BJ.hide = false; sfx.flip(); say('#bjMsg', 'Dealer plays…'); bjRender();
   await sleep(550);
-  while (bjVal(BJ.d) < 17) { BJ.d.push(bjDraw()); bjRender(); await sleep(600); }
+  while (bjVal(BJ.d) < 17) { BJ.d.push(bjDraw()); sfx.card(); bjRender(); await sleep(600); }
   const pv = bjVal(BJ.p), dv = bjVal(BJ.d), bet = BJ.bet;
   if (dv > 21) bjEnd(`Dealer busts. +${fmt(bet)}`, 'good', bet * 2);
   else if (pv > dv) bjEnd(`You win. +${fmt(bet)}`, 'good', bet * 2);
@@ -744,7 +829,7 @@ async function bjStand() {
 }
 function bjHit() {
   if (BJ.phase !== 'player') return;
-  BJ.p.push(bjDraw());
+  BJ.p.push(bjDraw()); sfx.card();
   const v = bjVal(BJ.p);
   if (v > 21) return bjEnd('Bust.', 'bad', 0);
   bjRender();
@@ -752,8 +837,8 @@ function bjHit() {
 }
 function bjDouble() {
   if (BJ.phase !== 'player' || BJ.p.length !== 2 || balance < BJ.bet) return;
-  setBalance(balance - BJ.bet); BJ.bet *= 2;
-  BJ.p.push(bjDraw());
+  setBalance(balance - BJ.bet); BJ.bet *= 2; sfx.chip();
+  BJ.p.push(bjDraw()); sfx.card();
   if (bjVal(BJ.p) > 21) return bjEnd('Bust.', 'bad', 0);
   bjRender(); bjStand();
 }
@@ -873,7 +958,7 @@ const RL_DUR = 6500, RL_TURNS = TAU * 3, BALL_TURNS = TAU * 5;
 function rlPlace(key, amt, force) {
   if (RL.spinning || (RL.auto && !force)) return false;
   if (amt > balance) { toast('Not enough credits — try Refill'); return false; }
-  setBalance(balance - amt); RL.bets[key] = (RL.bets[key] || 0) + amt; RL.stack.push({ key, amt }); rlUpdate(); return true;
+  setBalance(balance - amt); RL.bets[key] = (RL.bets[key] || 0) + amt; RL.stack.push({ key, amt }); sfx.chip(); rlUpdate(); return true;
 }
 function rlTotal() { return Object.values(RL.bets).reduce((a, b) => a + b, 0); }
 function rlUpdate() {
@@ -928,7 +1013,7 @@ function rlSpin() {
   document.querySelectorAll('.cell.win').forEach(c => c.classList.remove('win'));
   RL.win = Math.floor(Math.random() * 37);           // index into ORDER
   RL.dur = RL.auto ? 3200 : RL_DUR;                  // auto-spins are quicker; the draw itself is the same
-  RL.spinning = true; RL.t0 = performance.now(); RL.w0 = RL.wheel;
+  RL.spinning = true; RL.t0 = performance.now(); RL.w0 = RL.wheel; sfx.spin();
   RL.bEnd = RL.w0 + RL_TURNS + RL.win * SEG - Math.PI / 2;
   say('#rlMsg', RL.auto ? `Auto-spin ${RL.autoN + 1} — spinning…` : 'Spinning…'); rlUpdate();
   return true;
@@ -959,6 +1044,7 @@ function rlResolve() {
   RL.hist.unshift(n); RL.hist.length = Math.min(RL.hist.length, 12);
   $('#rlHist').innerHTML = RL.hist.map(x => `<span class="pill ${colorOf(x)}">${x}</span>`).join('');
   const won = ret > staked;
+  sfx.drop(); if (won) sfx.win((ret - staked) / staked >= 5, .3); else if (!ret) sfx.lose(.3);
   if (won) {   // celebrate: big amount over the wheel, gold glow, confetti sized to the win
     const pop = $('#rlWin'); pop.textContent = '+' + fmt(ret - staked); replay(pop, 'go');
     replay(wheelC.parentElement, 'won');
@@ -983,6 +1069,8 @@ function rlTick(now) {
     RL.ball = RL.bEnd + (1 - e) * BALL_TURNS;   // ball runs against the wheel
     const k = Math.min(1, Math.max(0, (t - .55) / .35)), s = k * k * (3 - 2 * k);
     RL.ballR = .96 - s * .30;
+    const pk = Math.floor((RL.ball - RL.wheel) / SEG);   // the ball clicks each time it passes a pocket
+    if (pk !== RL.lastPk) { RL.lastPk = pk; if (now - (RL.lastTick || 0) > 45) { RL.lastTick = now; sfx.tick(t); } }
     if (t >= 1) rlResolve();
   } else {
     RL.wheel += 0.0012;
@@ -1034,12 +1122,12 @@ function drLaunch() {
   setBalance(balance - bet);
   Object.assign(DR, { phase: 'flying', t0: performance.now(), bet, cashed: 0, m: 1, t: 0,
     crash: Math.max(1, Math.floor(0.97 / (1 - Math.random()) * 100) / 100) });
-  drBet.lock(true); drSet('', 'rising'); say('#drMsg', 'Collect whenever you like.');
+  sfx.driftStart(); drBet.lock(true); drSet('', 'rising'); say('#drMsg', 'Collect whenever you like.');
 }
 function drCollect(at) {
   if (DR.phase !== 'flying' || DR.cashed) return;
   DR.cashed = at; const win = DR.bet * at; setBalance(balance + win);
-  record('drift', win - DR.bet);
+  record('drift', win - DR.bet); sfx.collect();
   drSet('good', 'collected at ' + at.toFixed(2) + '×');
   say('#drMsg', `Collected ${fmt(win)} (${signed(win - DR.bet)}).`, 'good');
 }
@@ -1047,11 +1135,11 @@ $('#drGo').onclick = () => { if (DR.phase === 'flying') drCollect(Math.floor(DR.
 function drTick(now) {
   const btn = $('#drGo');
   if (DR.phase === 'flying') {
-    DR.t = (now - DR.t0) / 1000; DR.m = Math.exp(DR_K * DR.t);
+    DR.t = (now - DR.t0) / 1000; DR.m = Math.exp(DR_K * DR.t); sfx.driftUpdate(DR.m);
     const auto = parseFloat($('#drAuto').value);
     if (!DR.cashed && auto >= 1.01 && auto <= DR.crash && DR.m >= auto) drCollect(Math.round(auto * 100) / 100);
     if (DR.m >= DR.crash) {
-      DR.m = DR.crash; DR.t = Math.log(DR.crash) / DR_K; DR.phase = 'crashed'; DR.endAt = now;
+      DR.m = DR.crash; DR.t = Math.log(DR.crash) / DR_K; DR.phase = 'crashed'; DR.endAt = now; sfx.driftStop(); sfx.crash(!!DR.cashed);
       if (!DR.cashed) { record('drift', -DR.bet); drSet('bad', 'faded'); say('#drMsg', `Faded at ${DR.crash.toFixed(2)}× — bet lost.`, 'bad'); }
       else drSet('good', `collected at ${DR.cashed.toFixed(2)}× · faded at ${DR.crash.toFixed(2)}×`);
       DR.hist.unshift(DR.crash); DR.hist.length = Math.min(DR.hist.length, 14);
@@ -1126,12 +1214,12 @@ async function cfFlip() {
   const heads = Math.random() < P_HEADS;
   const cur = ((CF.rot % 360) + 360) % 360, target = heads ? 0 : 180;
   CF.rot += 1440 + ((target - cur + 360) % 360);
-  $('#cfCoin').style.transform = `rotateY(${CF.rot}deg)`; say('#cfMsg', 'Flipping…');
-  await sleep(1300);
+  $('#cfCoin').style.transform = `rotateY(${CF.rot}deg)`; say('#cfMsg', 'Flipping…'); sfx.coinFlip();
+  await sleep(1300); sfx.coinLand();
   const win = (CF.pick === 'H') === heads;
   const delta = win ? bet * CF_WIN : -bet * CF_LOSS;
   setBalance(balance + bet + delta);   // the bet was held during the flip; return it plus the result
-  record('coinflip', delta);
+  record('coinflip', delta); if (win) sfx.win(false, .25); else sfx.lose(.25);
   say('#cfMsg', `${heads ? 'Heads' : 'Tails'} — ${win ? 'you win ' + fmt(delta) : 'you lose ' + fmt(-delta)}.`, win ? 'good' : 'bad');
   CF.hist.unshift(heads); CF.hist.length = Math.min(CF.hist.length, 18);
   $('#cfHist').innerHTML = CF.hist.map(h => `<span class="pill" style="background:${h ? '#c9973b' : '#6c7d9c'}; color:#10141c">${h ? 'H' : 'T'}</span>`).join('');
@@ -1174,6 +1262,7 @@ function cfRun() {
     refreshAccount();
   }
   toast(`${done.toLocaleString('en-US')} flips played · heads ${heads.toLocaleString('en-US')} times` + (applied ? '' : ' · balance not changed'));
+  sfx.cascade(); if (b >= start) sfx.win(g >= 10, 1.25); else sfx.lose(1.25);
   const t0 = performance.now();
   const step = now => { CF.reveal = Math.min(1, (now - t0) / 1400); cfDraw(); if (CF.reveal < 1) requestAnimationFrame(step); };
   CF.reveal = 0; requestAnimationFrame(step);
