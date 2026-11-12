@@ -332,6 +332,38 @@ h3{margin:0; font-size:15px; font-weight:600}
 .simstats{grid-template-columns:repeat(6,1fr); margin:0 0 12px}
 .simstats .stat{background:var(--bg)} .simstats .stat b{font-size:18px}
 
+/* ---------- owner mode ---------- */
+*{scrollbar-color:#34446a transparent; scrollbar-width:thin}
+.mode{display:flex; background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:3px; margin:0 4px 14px}
+.mode button{flex:1; border:0; background:none; padding:7px 0; border-radius:7px; cursor:pointer; color:var(--muted); font-weight:600; font-size:12.5px; transition:.15s}
+.mode button:hover{color:var(--text)}
+.mode button.on{background:var(--surface3); color:var(--text)}
+body.owner nav [data-go]:not([data-go="owner"]), body.owner .nav-sep, body.owner .wallet, body.owner #refill{display:none}
+body:not(.owner) nav [data-go="owner"]{display:none}
+.ow-head{display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:16px; background:linear-gradient(135deg,#1d2340,#121927 60%)}
+.ow-clock{font-size:25px; font-weight:600; margin-top:4px; font-variant-numeric:tabular-nums}
+.ow-sub{color:var(--muted); margin-top:2px}
+.ow-main{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:16px; margin-bottom:16px}
+.ow-list,.ow-feed{height:430px; overflow:auto; margin-top:10px}
+.ow-row{display:grid; grid-template-columns:1.5fr 1.25fr .85fr .85fr; gap:8px; padding:8px 10px; border-radius:9px; cursor:pointer; align-items:center; font-size:13px}
+.ow-row:hover{background:var(--surface2)}
+.ow-row.sel{background:var(--surface3); box-shadow:inset 3px 0 0 var(--accent)}
+.ow-row small{display:block; color:var(--muted); font-size:11px}
+.ow-row span:nth-child(n+3){text-align:right; font-variant-numeric:tabular-nums}
+.ow-row.head{cursor:default; color:var(--muted); font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; position:sticky; top:0; background:var(--surface); border-radius:0; z-index:1}
+.ow-line{display:grid; grid-template-columns:44px 1fr auto; gap:10px; padding:7px 4px; border-bottom:1px solid var(--line); font-size:12.5px; align-items:baseline; line-height:1.4}
+.ow-line .t{color:var(--faint); font-variant-numeric:tabular-nums}
+.ow-line b{font-weight:600; cursor:pointer} .ow-line b:hover{color:var(--accent)}
+.ow-line .g{color:var(--muted)}
+.ow-line.ev{color:var(--muted)} .ow-line.ev b{color:var(--text)}
+.ow-card{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-top:10px}
+.ow-card p{margin:4px 0 10px; color:var(--muted); font-size:12.5px}
+.ow-card .kv{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.ow-card .kv b{display:block; font-size:15px; margin-top:3px; font-weight:600}
+.ow-chart{width:100%; height:200px; display:block; cursor:crosshair}
+.ow-games .rowl{grid-template-columns:1.2fr repeat(5,1fr)}
+@media (max-width:1100px){.ow-main{grid-template-columns:1fr}}
+
 /* ---------- account ---------- */
 .stats{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:16px}
 .stat{padding:14px 16px}
@@ -358,6 +390,7 @@ h3{margin:0; font-size:15px; font-weight:600}
 }
 @media (max-width:860px){
   .side{width:64px; padding:16px 8px} .brand div,nav button span,.side-foot{display:none} .brand{padding:4px 9px 18px}
+  .mode{flex-direction:column; margin:0 0 12px} .mode button{font-size:10px}
   nav button{justify-content:center; padding:11px 0} nav button.active::before{left:-8px}
   .top p{display:none} main{padding:16px}
 }
@@ -367,7 +400,9 @@ h3{margin:0; font-size:15px; font-weight:600}
 <div class="aurora"></div>
 <aside class="side">
   <div class="brand" data-go="lobby"><i></i><div>LUMEN<small>LOUNGE</small></div></div>
+  <div class="mode" id="mode" title="Play the games yourself, or run the casino and watch the guests"><button data-m="player" class="on">Player</button><button data-m="owner">Owner</button></div>
   <nav>
+    <button data-go="owner"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20V9l8-5 8 5v11M9 20v-6h6v6M4 20h16"/></svg><span>Casino floor</span></button>
     <button data-go="lobby" class="active"><svg class="ic" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span>Lobby</span></button>
     <button data-go="blackjack"><svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="6" width="10" height="14" rx="2"/><path d="M9 4.2l9.2 2.4a2 2 0 0 1 1.4 2.5L17 18"/></svg><span>Blackjack</span></button>
     <button data-go="roulette"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3.5v6M12 14.5v6M3.5 12h6M14.5 12h6"/></svg><span>Roulette</span></button>
@@ -567,6 +602,44 @@ h3{margin:0; font-size:15px; font-weight:600}
         <div class="chart-head" style="margin:0"><div><h3>Hand rankings</h3><p>Strongest first. The hand you currently hold is highlighted.</p></div></div>
         <div class="pk-ranks" id="pkRankGrid"></div>
       </div>
+    </section>
+
+    <section id="owner">
+      <div class="panel ow-head">
+        <div><span class="lbl">Casino time</span><div class="ow-clock" id="owClock">–</div><div class="ow-sub" id="owSub"></div></div>
+        <span class="spacer"></span>
+        <div><span class="lbl">Speed of time</span>
+          <div class="seg" id="owSpeed" style="margin:6px 0 0"><button data-s="0">Pause</button><button data-s="1">1 min/s</button><button data-s="5" class="on">5 min/s</button><button data-s="20">20 min/s</button><button data-s="60">1 hour/s</button></div></div>
+      </div>
+      <div class="stats">
+        <div class="panel stat"><span class="lbl">Guests inside</span><b id="owIn">0</b></div>
+        <div class="panel stat"><span class="lbl">Profit today</span><b id="owToday">0</b></div>
+        <div class="panel stat"><span class="lbl">Profit all time</span><b id="owTotal">0</b></div>
+        <div class="panel stat"><span class="lbl">Bets today</span><b id="owBets">0</b></div>
+        <div class="panel stat"><span class="lbl">Wagered today</span><b id="owTurn">0</b></div>
+        <div class="panel stat"><span class="lbl">Visits today</span><b id="owVisits">0</b></div>
+      </div>
+      <div class="two" style="margin-top:0">
+        <div class="panel"><div class="chart-head"><div><h3>House profit</h3><p>Running total, last two days of casino time.</p></div></div>
+          <div class="chart-wrap"><canvas class="ow-chart" id="owChartP"></canvas><div class="tip" id="owTipP"></div></div></div>
+        <div class="panel"><div class="chart-head"><div><h3>Guests in the casino</h3><p>How busy the floor is through the day.</p></div></div>
+          <div class="chart-wrap"><canvas class="ow-chart" id="owChartN"></canvas><div class="tip" id="owTipN"></div></div></div>
+      </div>
+      <div class="ow-main">
+        <div class="panel">
+          <div class="chart-head" style="margin:0"><div><h3>Guests</h3><p>Click a guest to follow them. Green results are good for the house.</p></div>
+            <div class="seg" id="owTab"><button data-t="in" class="on">Inside</button><button data-t="gone">Left</button></div></div>
+          <div class="ow-list" id="owList"></div>
+        </div>
+        <div class="panel">
+          <div class="chart-head" style="margin:0"><div><h3 id="owFeedTitle">Activity — everyone</h3><p id="owFeedSub">Every bet, arrival and departure, newest first.</p></div>
+            <button class="btn ghost" id="owAll" style="margin-left:auto; padding:7px 12px" hidden>Show everyone</button></div>
+          <div id="owCard"></div>
+          <div class="ow-feed" id="owFeed"></div>
+        </div>
+      </div>
+      <div class="panel ow-games"><h3>By game</h3><div id="owGames" style="margin-top:8px"></div>
+        <div class="hint">Roulette, blackjack and Drift are played against the house. At poker the guests play each other and the house only keeps a small cut of each pot. Coin Flip is left off the floor because its odds favour the player.</div></div>
     </section>
 
     <section id="account">
@@ -777,6 +850,7 @@ const TITLES = {
   drift: ['Drift', 'The longer it rises, the more it pays — until it fades.'],
   coin: ['Coin Flip', 'A fair coin — 50 / 50.'],
   poker: ['Poker', "No-limit Texas Hold'em against the bots."],
+  owner: ['Casino floor', 'You own the place. Watch the guests come, play and go.'],
   account: ['Account', 'Your balance, round by round.']
 };
 let view = 'lobby';
@@ -789,7 +863,7 @@ function show(name) {
   if (name === 'coin') cfDraw();
   if (name === 'poker' && PK.seated) pkRender();
 }
-document.addEventListener('click', e => { const t = e.target.closest('[data-go]'); if (t) show(t.dataset.go); });
+document.addEventListener('click', e => { const t = e.target.closest('[data-go]'); if (t) show(OW.on ? 'owner' : t.dataset.go); });
 
 /* ---------- chips & bet control ---------- */
 const chipColor = v => v >= 1000 ? '#ef4444' : v >= 500 ? '#f59e0b' : v >= 100 ? '#8b5cf6' : v >= 25 ? '#10b981' : v >= 10 ? '#3b82f6' : '#64748b';
@@ -1812,6 +1886,227 @@ function cfDraw() {
   window.addEventListener('resize', () => { if (view === 'coin') cfDraw(); });
 }
 
+/* ================= OWNER MODE: you run the casino and simulated guests play ================= */
+const OW_FIRST = ['Mara', 'Elias', 'Noor', 'Jonas', 'Ines', 'Tariq', 'Sofia', 'Luca', 'Yuki', 'Amara', 'Felix', 'Lena', 'Omar', 'Clara', 'Mateo', 'Zoe', 'Kai', 'Nadia', 'Hugo', 'Iris',
+  'Rafael', 'Mina', 'Theo', 'Selma', 'Dario', 'Anya', 'Viktor', 'Leila', 'Marco', 'Tess', 'Ravi', 'Elsa', 'Bruno', 'Naomi', 'Emil', 'Carmen', 'Idris', 'Freya', 'Pablo', 'Hana',
+  'Otto', 'Livia', 'Samir', 'Greta', 'Nico', 'Rosa', 'Arjun', 'Maeve', 'Stefan', 'Dalia'];
+/* Guest types. w = how common; roll = money they bring; bet = usual bet as a share of that; stay = minutes; games = what they like;
+   mode = how they size bets; skill = how well they play; sw = chance per bet of wandering to another game;
+   goal / stop = win or loss (as a share of their money) at which they leave. */
+const OW_TYPES = [
+  { k: 'Tourist', w: 26, roll: [120, 500], bet: [.02, .05], stay: [25, 80], games: { roulette: 4, blackjack: 2, drift: 2, poker: .5 }, mode: 'flat', skill: .4, sw: .04, goal: [.5, 1.5], stop: [.6, 1],
+    about: 'Here for the fun of it. Small bets, wanders between tables, does not stay long.' },
+  { k: 'Regular', w: 24, roll: [400, 1500], bet: [.015, .035], stay: [70, 200], games: { roulette: 2, blackjack: 3, drift: 1, poker: 1 }, mode: 'flat', skill: .8, sw: .008, goal: [.6, 2], stop: [.5, .9],
+    about: 'Comes often and sticks to a favourite game with steady, even bets.' },
+  { k: 'High roller', w: 5, roll: [5000, 25000], bet: [.01, .03], stay: [40, 150], games: { blackjack: 4, roulette: 3 }, mode: 'hot', skill: .7, sw: .01, goal: [.3, 1], stop: [.4, .8],
+    about: 'Brings serious money and raises the bet while winning. One good or bad run moves your whole night.' },
+  { k: 'Chaser', w: 10, roll: [300, 2000], bet: [.01, .02], stay: [40, 160], games: { roulette: 5, blackjack: 1 }, mode: 'martingale', skill: .5, sw: .005, goal: [.2, .5], stop: [.9, 1],
+    about: 'Doubles the bet after every loss to win it back. Usually leaves a little ahead, sometimes loses everything.' },
+  { k: 'Cautious', w: 14, roll: [100, 600], bet: [.008, .02], stay: [20, 90], games: { roulette: 2, blackjack: 2, drift: 1 }, mode: 'flat', skill: .7, sw: .02, goal: [.15, .4], stop: [.2, .5],
+    about: 'Tiny bets and strict limits. Leaves at the first decent win or a modest loss.' },
+  { k: 'Thrill-seeker', w: 10, roll: [200, 1500], bet: [.04, .12], stay: [15, 70], games: { drift: 5, roulette: 3 }, mode: 'tilt', skill: .4, sw: .03, goal: [1, 4], stop: [.9, 1],
+    about: 'Big bets on long shots, and bets more when losing. Goes home broke or with a story.' },
+  { k: 'Card counter', w: 3, roll: [1500, 6000], bet: [.01, .02], stay: [90, 240], games: { blackjack: 1 }, mode: 'spread', skill: 1.6, sw: 0, goal: [.5, 1.5], stop: [.5, .8],
+    about: 'Plays only blackjack, quietly and for hours, with bets that jump when the deck is good. Has a small edge over you.' },
+  { k: 'Poker grinder', w: 8, roll: [500, 3000], bet: [.02, .04], stay: [90, 300], games: { poker: 1 }, mode: 'flat', skill: .8, sw: 0, goal: [.8, 2.5], stop: [.6, 1],
+    about: 'Sits at the poker table for hours. Wins or loses to other guests; you only earn the cut from each pot.' }
+];
+// how busy each hour is (share of the evening peak), and how many bets a guest makes per minute at each game
+const OW_HOURS = [.8, .6, .4, .25, .15, .1, .08, .08, .1, .12, .18, .25, .35, .4, .4, .45, .5, .6, .75, .9, 1, 1, 1, .9];
+const OW_PACE = { roulette: .7, blackjack: .9, drift: 1, poker: .5 };
+const OW_PEAK = .2;   // arrivals per minute at the busiest hour
+const OW = { on: false, time: 0, speed: 5, acc: 0, lastReal: 0, lastRender: 0, seq: 0, in: [], gone: [], feed: [], series: [], sel: null, tab: 'in', dayFactor: 1,
+  total: 0, day: { profit: 0, bets: 0, turn: 0, visits: 0 }, geo: {}, hover: {}, win: [],
+  games: { roulette: { bets: 0, turn: 0, profit: 0 }, blackjack: { bets: 0, turn: 0, profit: 0 }, drift: { bets: 0, turn: 0, profit: 0 }, poker: { bets: 0, turn: 0, profit: 0 } } };
+const rnd = (a, b) => a + Math.random() * (b - a);
+const owPick = (items, wf) => { let tot = 0; for (const it of items) tot += wf(it); let x = Math.random() * tot; for (const it of items) { x -= wf(it); if (x <= 0) return it; } return items[items.length - 1]; };
+const owNice = v => v >= 1000 ? Math.round(v / 100) * 100 : v >= 100 ? Math.round(v / 25) * 25 : v >= 20 ? Math.round(v / 5) * 5 : Math.max(1, Math.round(v));   // chip-sized amounts
+const owClock = t => new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+function owLog(p, g, txt, d) {
+  const e = { t: OW.time, id: p.id, name: p.name, g, txt, d };
+  p.log.push(e); if (p.log.length > 250) p.log.shift();
+  OW.feed.push(e); if (OW.feed.length > 500) OW.feed.shift();
+}
+function owArrive() {
+  const T = owPick(OW_TYPES, t => t.w);
+  const roll = owNice(T.roll[0] * Math.pow(T.roll[1] / T.roll[0], Math.random()));    // most bring the smaller amounts, a few bring a lot
+  const game = owPick(Object.keys(T.games), g => T.games[g]);
+  const p = { id: ++OW.seq, name: OW_FIRST[Math.floor(Math.random() * OW_FIRST.length)] + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.',
+    type: T.k, T, start: roll, bank: roll, net: 0, base: owNice(roll * rnd(T.bet[0], T.bet[1])), game,
+    stay: Math.round(rnd(T.stay[0], T.stay[1])), goal: roll * rnd(T.goal[0], T.goal[1]), stop: roll * rnd(T.stop[0], T.stop[1]),
+    skill: T.skill * rnd(.8, 1.2), breakP: rnd(.05, .3), colour: Math.random() < .5 ? 'red' : 'black',
+    mins: 0, rounds: 0, wstreak: 0, lstreak: 0, arrived: OW.time, left: 0, reason: '', log: [] };
+  OW.in.push(p); OW.day.visits++;
+  owLog(p, 'arrive', `arrived with ${fmt(roll)} and sat down at ${GAMES[game].toLowerCase()}`, 0);
+}
+function owLeave(p, reason) {
+  p.left = OW.time; p.reason = reason;
+  OW.in.splice(OW.in.indexOf(p), 1); OW.gone.unshift(p); if (OW.gone.length > 150) OW.gone.pop();
+  owLog(p, 'leave', `left after ${p.mins} min — ${reason}`, p.net);
+}
+// One bet by one guest. Returns nothing; updates the guest, the house and the logs.
+function owRound(p) {
+  const T = p.T, g = p.game;
+  let m = 1;
+  if (T.mode === 'martingale') m = Math.pow(2, Math.min(p.lstreak, 7));
+  else if (T.mode === 'hot') m = 1 + .5 * Math.min(p.wstreak, 4);
+  else if (T.mode === 'tilt') m = 1 + .6 * Math.min(p.lstreak, 5);
+  else if (T.mode === 'spread') m = [1, 1, 1, 1, 2, 2, 4, 8][Math.floor(Math.random() * 8)];
+  else if (Math.random() < .2) m = rnd(.5, 2);                       // even steady bettors vary a bet now and then
+  let bet = Math.min(p.bank, owNice(p.base * m)); if (bet < 1) bet = p.bank;
+  bet = r2(bet);
+  let d, txt, house;
+  if (g === 'roulette') {
+    const x = Math.random(), longShot = T.k === 'Thrill-seeker' ? .45 : .15;
+    let key, label;
+    if (T.mode === 'martingale') { key = p.colour; label = p.colour; }
+    else if (x < longShot) { const k = Math.floor(Math.random() * 37); key = 'n' + k; label = 'number ' + k; }
+    else if (x < longShot + .2) { const k = 1 + Math.floor(Math.random() * 3); if (Math.random() < .5) { key = 'd' + k; label = ['1st', '2nd', '3rd'][k - 1] + ' dozen'; } else { key = 'c' + k; label = 'a column'; } }
+    else { [key, label] = [['red', 'red'], ['black', 'black'], ['odd', 'odd'], ['even', 'even'], ['low', '1–18'], ['high', '19–36']][Math.floor(Math.random() * 6)]; }
+    const n = Math.floor(Math.random() * 37);
+    d = bet * rlMult(key, n) - bet; house = -d;
+    txt = `on ${label}; the ball landed on ${n}${n ? ' ' + colorOf(n) : ''}`;
+  } else if (g === 'blackjack') {
+    // outcome odds of a real blackjack hand; weaker players lose a little more often, a card counter a little less
+    const edge = .005 + (1 - p.skill) * .03, w = (.7305 - edge) / 2, x = Math.random(), can2 = p.bank >= bet * 2;
+    if (x < .047) { d = bet * 1.5; txt = 'dealt a blackjack'; }
+    else if (x < .077) { d = can2 ? bet * 2 : bet; txt = can2 ? 'doubled down and won' : 'won'; }
+    else if (x < .102) { d = can2 ? -bet * 2 : -bet; txt = can2 ? 'doubled down and lost' : 'lost'; }
+    else if (x < .189) { d = 0; txt = 'pushed with the dealer'; }
+    else if (x < .189 + w) { d = bet; txt = 'beat the dealer'; }
+    else { d = -bet; txt = 'lost to the dealer'; }
+    house = -d;
+  } else if (g === 'drift') {
+    const t = Math.round((T.k === 'Thrill-seeker' ? rnd(2, 15) : T.k === 'Cautious' ? rnd(1.2, 2) : rnd(1.5, 4)) * 100) / 100;
+    const crash = Math.max(1, Math.floor(0.97 / (1 - Math.random()) * 100) / 100);     // same rule as the Drift game
+    d = crash >= t ? bet * (t - 1) : -bet; house = -d;
+    txt = `aiming for ${t.toFixed(2)}×; it faded at ${crash.toFixed(2)}×`;
+  } else {
+    const x = Math.random(), winP = .1 + (p.skill - .8) * .05;
+    if (x < .7) { d = -bet * .15; txt = 'folded early'; } else if (x < 1 - winP) { d = -bet; txt = 'lost a showdown to another guest'; } else { d = bet * 2.65; txt = 'won the pot from other guests'; }
+    house = bet * .04;                                                                // the house only takes its cut
+  }
+  d = r2(d); house = r2(house);
+  p.bank = r2(p.bank + d); p.net = r2(p.bank - p.start); p.rounds++;
+  if (d > 0) { p.wstreak++; p.lstreak = 0; } else if (d < 0) { p.lstreak++; p.wstreak = 0; }
+  const G = OW.games[g]; G.bets++; G.turn += bet; G.profit += house;
+  OW.total = r2(OW.total + house); OW.day.profit += house; OW.day.bets++; OW.day.turn += bet;
+  owLog(p, g, `bet ${fmt(bet)} ${txt}`, d);
+}
+function owAct(p) {
+  p.mins++;
+  if (Math.random() >= p.breakP && Math.random() < OW_PACE[p.game]) {     // otherwise they are watching, chatting or getting a drink
+    const opts = Object.keys(p.T.games);
+    if (opts.length > 1 && Math.random() < p.T.sw) {
+      p.game = owPick(opts.filter(g => g !== p.game), g => p.T.games[g]); p.lstreak = p.wstreak = 0;
+      owLog(p, 'move', `moved over to ${GAMES[p.game].toLowerCase()}`, 0);
+    }
+    owRound(p);
+  }
+  if (p.bank < 1) owLeave(p, 'lost everything');
+  else if (p.net <= -p.stop) owLeave(p, 'hit their loss limit');
+  else if (p.net >= p.goal) owLeave(p, 'cashed out a winner');
+  else if (p.mins >= p.stay) owLeave(p, p.net > 0 ? 'called it a night, ahead' : p.net < 0 ? 'called it a night, behind' : 'called it a night, even');
+}
+// Advance the casino by one simulated minute
+function owStep() {
+  OW.time += 60000;
+  const d = new Date(OW.time), hr = d.getHours(), wd = d.getDay();
+  if (hr === 0 && d.getMinutes() === 0) { OW.day = { profit: 0, bets: 0, turn: 0, visits: 0 }; OW.dayFactor = rnd(.8, 1.25); }   // a new day: some days are simply busier
+  const weekend = wd === 6 || wd === 0 || (wd === 5 && hr >= 17);
+  const lam = OW_PEAK * OW_HOURS[hr] * OW.dayFactor * (weekend ? 1.4 : 1);
+  let k = -1, pr = 1; const L = Math.exp(-lam); do { k++; pr *= Math.random(); } while (pr > L);    // random number of arrivals this minute
+  for (let i = 0; i < k; i++) owArrive();
+  for (const p of OW.in.slice()) owAct(p);
+  if (d.getMinutes() % 10 === 0) { OW.series.push({ t: OW.time, b: OW.total, n: OW.in.length }); if (OW.series.length > 1500) OW.series.shift(); }
+}
+function owInit() {
+  const s = new Date(); s.setHours(15, 0, 0, 0); OW.time = s.getTime();
+  OW.series.push({ t: OW.time, b: 0, n: 0 });
+  for (let i = 0; i < 180; i++) owStep();     // open the doors three hours earlier so the floor is not empty when you walk in
+}
+function owTick(now) {
+  if (!OW.lastReal) OW.lastReal = now;
+  OW.acc += Math.min(1, (now - OW.lastReal) / 1000) * OW.speed; OW.lastReal = now;
+  let steps = Math.min(Math.floor(OW.acc), 240); OW.acc = steps >= 240 ? 0 : OW.acc - steps;
+  while (steps-- > 0) owStep();
+  if (now - OW.lastRender > 300) { OW.lastRender = now; if (view === 'owner') owRender(); }
+}
+function owRender() {
+  const d = new Date(OW.time), hr = d.getHours(), n = OW.in.length;
+  $('#owClock').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + owClock(OW.time);
+  const part = hr < 6 ? 'Late night' : hr < 12 ? 'Morning' : hr < 17 ? 'Afternoon' : hr < 21 ? 'Evening' : 'Night';
+  $('#owSub').textContent = `${part} · ${n === 0 ? 'the floor is empty' : n < 5 ? 'quiet floor' : n < 12 ? 'steady floor' : n < 20 ? 'busy floor' : 'packed floor'}` + (OW.speed ? '' : ' · paused');
+  const tint = (el, v) => { el.textContent = signed(Math.round(v)); el.className = v > 0 ? 'good' : v < 0 ? 'bad' : ''; };
+  $('#owIn').textContent = n; tint($('#owToday'), OW.day.profit); tint($('#owTotal'), OW.total);
+  $('#owBets').textContent = fmt(OW.day.bets); $('#owTurn').textContent = fmt(Math.round(OW.day.turn)); $('#owVisits').textContent = fmt(OW.day.visits);
+  // guests
+  let sel = OW.sel == null ? null : OW.in.find(p => p.id === OW.sel) || OW.gone.find(p => p.id === OW.sel);
+  if (OW.sel != null && !sel) OW.sel = null;
+  const list = OW.tab === 'in' ? OW.in.slice().reverse() : OW.gone;
+  const tabs = $('#owTab').children; tabs[0].textContent = `Inside (${n})`; tabs[1].textContent = `Left (${OW.gone.length})`;
+  $('#owList').innerHTML = `<div class="ow-row head"><span>Guest</span><span>${OW.tab === 'in' ? 'Playing' : 'Why they left'}</span><span>Has</span><span>Result</span></div>` +
+    (list.length ? list.map(p => `<div class="ow-row${p.id === OW.sel ? ' sel' : ''}" data-id="${p.id}"><span><b>${p.name}</b><small>${p.type}</small></span>` +
+      `<span>${OW.tab === 'in' ? GAMES[p.game] : p.reason + `<small>${owClock(p.left)}</small>`}</span><span>${fmt(p.bank)}</span>` +
+      `<span class="${p.net > 0 ? 'bad' : p.net < 0 ? 'good' : ''}">${signed(p.net)}</span></div>`).join('')
+      : `<div class="empty" style="padding:14px 10px">${OW.tab === 'in' ? 'Nobody is in the casino right now.' : 'Nobody has left yet.'}</div>`);
+  // activity
+  $('#owAll').hidden = !sel;
+  $('#owFeedTitle').textContent = sel ? `Activity — ${sel.name}` : 'Activity — everyone';
+  $('#owFeedSub').textContent = sel ? 'Everything this guest has done, newest first.' : 'Every bet, arrival and departure, newest first.';
+  $('#owCard').innerHTML = !sel ? '' : `<div class="ow-card"><b>${sel.name}</b> · ${sel.type} · ${sel.left ? 'left at ' + owClock(sel.left) + ' (' + sel.reason + ')' : 'playing ' + GAMES[sel.game].toLowerCase() + ' now'}` +
+    `<p>${sel.T.about}</p><div class="kv"><div><span class="lbl">Arrived</span><b>${owClock(sel.arrived)}</b></div><div><span class="lbl">Brought</span><b>${fmt(sel.start)}</b></div>` +
+    `<div><span class="lbl">Bets made</span><b>${sel.rounds}</b></div><div><span class="lbl">Their result</span><b class="${sel.net > 0 ? 'bad' : sel.net < 0 ? 'good' : ''}">${signed(sel.net)}</b></div></div></div>`;
+  const lines = (sel ? sel.log : OW.feed).slice(-70).reverse();
+  $('#owFeed').innerHTML = lines.map(e => {
+    const ev = e.g === 'arrive' || e.g === 'leave' || e.g === 'move';
+    return `<div class="ow-line${ev ? ' ev' : ''}"><span class="t">${owClock(e.t)}</span><span><b data-id="${e.id}">${e.name}</b> ${ev ? '' : `<span class="g">${GAMES[e.g]} ·</span> `}${e.txt}</span>` +
+      `<span class="${e.d > 0 ? 'bad' : e.d < 0 ? 'good' : ''}">${e.g === 'arrive' || e.g === 'move' ? '' : signed(e.d)}</span></div>`;
+  }).join('') || '<div class="empty">Nothing has happened yet.</div>';
+  // by game
+  $('#owGames').innerHTML = `<div class="rowl head"><span>Game</span><span>Playing now</span><span>Bets</span><span>Wagered</span><span>House profit</span><span>Kept</span></div>` +
+    Object.keys(OW.games).map(g => { const G = OW.games[g];
+      return `<div class="rowl"><span>${GAMES[g]}</span><span>${OW.in.filter(p => p.game === g).length}</span><span>${fmt(G.bets)}</span><span>${fmt(Math.round(G.turn))}</span>` +
+        `<span class="${G.profit > 0 ? 'good' : G.profit < 0 ? 'bad' : ''}">${signed(Math.round(G.profit))}</span><span>${G.turn ? (G.profit / G.turn * 100).toFixed(1) + '%' : '–'}</span></div>`; }).join('');
+  owCharts();
+}
+function owCharts() {
+  OW.win = OW.series.slice(-288);
+  const label = i => OW.win[i] ? owClock(OW.win[i].t) : '';
+  OW.geo.p = drawSeries($('#owChartP'), OW.win, { axes: true, label, hover: OW.hover.p });
+  OW.geo.n = drawSeries($('#owChartN'), OW.win.map(s => ({ b: s.n })), { axes: true, label, hover: OW.hover.n, color: '#8b7cf6' });
+}
+function owSetMode(m) {
+  OW.on = m === 'owner'; document.body.classList.toggle('owner', OW.on); store.set('mode', m);
+  $('#mode').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+  if (OW.on) { if (!OW.time) owInit(); OW.lastReal = 0; show('owner'); owRender(); } else show('lobby');
+}
+$('#mode').onclick = e => { const b = e.target.closest('[data-m]'); if (b) owSetMode(b.dataset.m); };
+$('#owSpeed').onclick = e => {
+  const b = e.target.closest('[data-s]'); if (!b) return;
+  OW.speed = +b.dataset.s; OW.acc = 0; $('#owSpeed').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); owRender();
+};
+$('#owTab').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; OW.tab = b.dataset.t; $('#owTab').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); owRender(); };
+$('#owAll').onclick = () => { OW.sel = null; owRender(); };
+// the lists are redrawn several times a second, so selection listens for the press rather than a full click
+for (const id of ['#owList', '#owFeed']) $(id).addEventListener('pointerdown', e => {
+  const t = e.target.closest('[data-id]'); if (!t) return;
+  const pid = +t.dataset.id; OW.sel = OW.sel === pid && id === '#owList' ? null : pid; sfx.click(); owRender();
+});
+for (const [key, cvSel, tipSel, val] of [['p', '#owChartP', '#owTipP', s => 'Profit ' + signed(Math.round(s.b))], ['n', '#owChartN', '#owTipN', s => s.n + (s.n === 1 ? ' guest' : ' guests')]]) {
+  const cv = $(cvSel), tip = $(tipSel);
+  cv.addEventListener('mousemove', e => {
+    const g = OW.geo[key]; if (!g || g.n < 2) return;
+    const r = cv.getBoundingClientRect(), i = Math.max(0, Math.min(g.n - 1, Math.round((e.clientX - r.left - g.pl) / (g.w - g.pl - g.pr) * (g.n - 1))));
+    OW.hover[key] = i; owCharts();
+    const s = OW.win[i]; if (!s) return;
+    tip.innerHTML = `<b>${val(s)}</b><br><span style="color:var(--muted)">${new Date(s.t).toLocaleDateString('en-GB', { weekday: 'short' })} ${owClock(s.t)}</span>`;
+    tip.style.opacity = 1; const x = g.X(i), tw = tip.offsetWidth; tip.style.left = (x + 14 + tw > g.w ? x - tw - 14 : x + 14) + 'px';
+  });
+  cv.addEventListener('mouseleave', () => { OW.hover[key] = null; tip.style.opacity = 0; owCharts(); });
+}
+window.addEventListener('resize', () => { if (view === 'owner') owCharts(); });
+
 /* ================= ACCOUNT CHART ================= */
 let accRange = 0, hoverIdx = null, chartGeo = null;
 const niceStep = x => { const p = Math.pow(10, Math.floor(Math.log10(x))), f = x / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; };
@@ -1842,7 +2137,7 @@ function drawSeries(cv, pts, o = {}) {
     for (let k = 0; k <= ticks && n > 1; k++) {
       const i = Math.round(k / ticks * (n - 1));
       c.textAlign = k === 0 ? 'left' : k === ticks ? 'right' : 'center';
-      c.fillText('#' + (off + i), X(i), h - 8);
+      c.fillText(o.label ? o.label(i) : '#' + (off + i), X(i), h - 8);
     }
     if (n < 2) { c.textAlign = 'center'; c.fillText('Play a round to start your chart', w / 2, h / 2 - 20); }
   }
@@ -1942,9 +2237,11 @@ document.addEventListener('keydown', e => {
 /* ---------- start ---------- */
 paintBal(balance, true);
 show('lobby');
+if (store.get('mode') === 'owner') owSetMode('owner');   // come back in the mode you left in
 function loop(now) {
   if (view === 'roulette' || RL.spinning) rlTick(now);
   if (view === 'drift' || DR.phase === 'flying') drTick(now);
+  if (OW.on) owTick(now);
   requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
