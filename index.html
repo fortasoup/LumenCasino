@@ -15,7 +15,7 @@
   --radius:16px;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html{height:100%} body{min-height:100%}   /* the body must grow with the page, or the sticky sidebar scrolls away after one screen */
 body{
   margin:0; background:var(--bg); color:var(--text); display:flex;
   font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif; font-size:14px;
@@ -188,7 +188,14 @@ h3{margin:0; font-size:15px; font-weight:600}
 .count{margin-left:auto; color:var(--muted); font-size:12px} .count[hidden]{display:none} .count b{color:var(--text)}
 .banner{text-align:center; margin-top:auto; padding-top:10px; position:relative}
 .pro{min-height:18px; font-size:12.5px; color:var(--violet); text-align:center; margin-top:4px; position:relative}
-.actions{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px}
+.actions{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.hand.multi{padding-left:0; gap:14px; flex-wrap:wrap}
+.subhand{display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 12px; border-radius:14px; border:1px solid transparent; opacity:.7; transition:.2s}
+.subhand.on{opacity:1; border-color:var(--accent); background:rgba(79,209,197,.07)}
+.subhand.fin{opacity:1}
+.subhand .hand{min-height:0; padding-left:30px}
+.subhand .card{width:68px; height:97px; margin-left:-30px} .subhand .card .big{font-size:34px} .subhand .card .cr{font-size:16px}
+.subhand small{color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums} .subhand small b{color:var(--text)}
 .actions .btn{padding:12px 4px}
 
 /* ---------- roulette ---------- */
@@ -338,8 +345,9 @@ h3{margin:0; font-size:15px; font-weight:600}
 .mode button{flex:1; border:0; background:none; padding:7px 0; border-radius:7px; cursor:pointer; color:var(--muted); font-weight:600; font-size:12.5px; transition:.15s}
 .mode button:hover{color:var(--text)}
 .mode button.on{background:var(--surface3); color:var(--text)}
-body.owner nav [data-go]:not([data-go="owner"]), body.owner .nav-sep, body.owner .wallet, body.owner #refill{display:none}
-body:not(.owner) nav [data-go="owner"]{display:none}
+body.owner nav [data-go]:not([data-go="owner"]):not([data-go="empire"]), body.owner .nav-sep, body.owner .wallet, body.owner #refill{display:none}
+body:not(.owner) nav [data-go="owner"], body:not(.owner) nav [data-go="empire"]{display:none}
+#emCas .rowl:not(.head){cursor:pointer} #emCas .rowl:not(.head):hover{background:var(--surface2)}
 .ow-head{display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:16px; background:linear-gradient(135deg,#1d2340,#121927 60%)}
 .ow-clock{font-size:25px; font-weight:600; margin-top:4px; font-variant-numeric:tabular-nums}
 .ow-sub{color:var(--muted); margin-top:2px}
@@ -351,7 +359,7 @@ body:not(.owner) nav [data-go="owner"]{display:none}
 .ow-row small{display:block; color:var(--muted); font-size:11px}
 .ow-row span:nth-child(n+3){text-align:right; font-variant-numeric:tabular-nums}
 .ow-row.head{cursor:default; color:var(--muted); font-size:11px; letter-spacing:.12em; text-transform:uppercase; font-weight:600; position:sticky; top:0; background:var(--surface); border-radius:0; z-index:1}
-.ow-line{display:grid; grid-template-columns:44px 1fr auto; gap:10px; padding:7px 4px; border-bottom:1px solid var(--line); font-size:12.5px; align-items:baseline; line-height:1.4}
+.ow-line{display:grid; grid-template-columns:88px 1fr auto; gap:10px; padding:7px 4px; border-bottom:1px solid var(--line); font-size:12.5px; align-items:baseline; line-height:1.4}
 .ow-line .t{color:var(--faint); font-variant-numeric:tabular-nums}
 .ow-line b{font-weight:600; cursor:pointer} .ow-line b:hover{color:var(--accent)}
 .ow-line .g{color:var(--muted)}
@@ -361,7 +369,99 @@ body:not(.owner) nav [data-go="owner"]{display:none}
 .ow-card .kv{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
 .ow-card .kv b{display:block; font-size:15px; margin-top:3px; font-weight:600}
 .ow-chart{width:100%; height:200px; display:block; cursor:crosshair}
-.ow-games .rowl{grid-template-columns:1.2fr repeat(5,1fr)}
+#alerts{position:fixed; top:76px; right:16px; z-index:30; display:flex; flex-direction:column; gap:8px; width:320px; max-width:calc(100vw - 32px); pointer-events:none}
+.alert{pointer-events:auto; background:var(--surface2); border:1px solid var(--line2); border-left:4px solid var(--accent); border-radius:12px; padding:10px 14px; box-shadow:0 12px 30px rgba(0,0,0,.45);
+  animation:alertIn .35s ease; transition:opacity .4s, transform .4s; font-size:13px; line-height:1.4}
+.alert{position:relative; padding-right:34px}
+.alert .x{position:absolute; top:6px; right:6px; width:24px; height:24px; border:0; border-radius:7px; background:none; color:var(--muted); font-size:18px; line-height:1; cursor:pointer}
+.alert .x:hover{background:var(--surface3); color:var(--text)}
+.alert.click{cursor:pointer} .alert.click:hover{background:var(--surface3)}
+.alert b{display:block; font-size:13.5px; margin-bottom:1px} .alert span{color:var(--muted)}
+.alert.good{border-left-color:var(--good)} .alert.bad{border-left-color:var(--bad)} .alert.vip{border-left-color:var(--gold)} .alert.info{border-left-color:var(--violet)}
+.alert.out{opacity:0; transform:translateX(30px)}
+@keyframes alertIn{from{opacity:0; transform:translateX(30px)} to{opacity:1; transform:none}}
+#ambBtn.off{color:var(--faint)}
+.acct{display:flex; align-items:center; gap:10px; width:calc(100% - 8px); margin:0 4px 10px; padding:8px 10px; border-radius:10px; border:1px solid var(--line); background:none; color:inherit; font:inherit; cursor:pointer; text-align:left}
+.acct:hover{border-color:var(--line2); background:var(--surface2)}
+.acct i,.acct-row i{width:30px; height:30px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--violet)); color:#06211f; font-style:normal; font-weight:700; display:grid; place-items:center; flex:none}
+.acct b{display:block; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:120px} .acct small{color:var(--muted); font-size:11px}
+.acct{margin-top:auto} .acct+.side-foot{margin-top:0}
+@media (max-width:900px){.acct span{display:none} .acct{justify-content:center; padding:8px 0}}
+.dlg{position:fixed; inset:0; z-index:40; background:rgba(4,7,12,.72); display:grid; place-items:center; padding:20px}
+.dlg[hidden]{display:none}
+.dlg-box{width:520px; max-width:100%; max-height:calc(100vh - 40px); overflow:auto}
+.acct-row{display:flex; align-items:center; gap:12px; padding:10px 4px; border-bottom:1px solid var(--line)}
+.acct-row>span{flex:1; min-width:0} .acct-row b{display:block} .acct-row small{color:var(--muted); font-size:12px}
+.acct-row button{border:1px solid var(--line2); background:var(--surface2); color:inherit; border-radius:8px; padding:6px 11px; font:inherit; font-size:12px; cursor:pointer}
+.acct-row button:hover{border-color:var(--accent)} .acct-row button.warn:hover{border-color:var(--bad); color:var(--bad)}
+.acct-row em{font-style:normal; color:var(--accent); font-size:12px; font-weight:600}
+.acct-new{display:flex; gap:8px; margin-top:14px}
+.acct-new input{flex:1; background:var(--bg); border:1px solid var(--line2); border-radius:10px; padding:10px 12px; color:inherit; font:inherit; min-width:0}
+.acct-new input:focus{outline:2px solid var(--accent); outline-offset:1px}
+.ow-pick{background:var(--bg); color:var(--text); border:1px solid var(--line2); border-radius:9px; padding:7px 10px; font:inherit; font-weight:600; font-size:13px; max-width:70%; cursor:pointer}
+.ow-pick:hover{border-color:var(--accent)} .ow-pick option{background:var(--surface)}
+.ow-now{font-size:15px; font-variant-numeric:tabular-nums; white-space:nowrap}
+#owCharts .ow-chart,#emCharts .ow-chart{height:180px} #owCharts .panel[hidden],#emCharts .panel[hidden]{display:none}
+#alertList .switch{margin-bottom:8px}
+#casList{display:none; flex-direction:column; gap:6px; margin:14px 4px 0; overflow:auto; min-height:0}
+body.owner #casList{display:flex}
+#casList .lbl{padding:0 6px 2px} #casList>*{flex:none} #casList{padding-bottom:8px; margin-bottom:8px}
+.cas{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; border:1px solid var(--line); background:none; color:inherit; font:inherit; cursor:pointer; text-align:left}
+.cas:hover{border-color:var(--line2); background:var(--surface2)}
+.cas.on{border-color:var(--accent); background:var(--surface3)}
+.cas i{width:28px; height:28px; border-radius:8px; background:var(--surface3); color:var(--accent); font-style:normal; font-weight:700; display:grid; place-items:center; flex:none}
+.cas.on i{background:var(--accent); color:var(--accent-ink)}
+.cas b{display:block; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:120px} .cas small{color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums}
+.cas.add{border-style:dashed; color:var(--muted)}
+@media (max-width:900px){.cas span,#casList .lbl{display:none} .cas{justify-content:center; padding:8px 0}}
+.ow-biz{margin-bottom:16px}
+.ow-biz-top{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px 0}
+.ow-ups{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.ow-up{display:flex; flex-direction:column; gap:4px; text-align:left; background:var(--bg); border:1px solid var(--line); border-radius:11px; padding:11px 12px; color:inherit; font:inherit; cursor:pointer}
+.ow-up:hover{border-color:var(--accent); background:var(--surface2)}
+.ow-up b{font-weight:600} .ow-up small{color:var(--muted); font-size:11.5px; line-height:1.4; flex:1}
+.ow-up em{font-style:normal; font-weight:600; color:var(--gold); font-variant-numeric:tabular-nums; margin-top:4px}
+.ow-up.max{cursor:default; border-color:var(--line)} .ow-up.max:hover{background:var(--bg)} .ow-up.max em{color:var(--good)}
+.ow-up.poor em{color:var(--faint)}
+.ow-up .pips{color:var(--accent); letter-spacing:2px; font-size:11px}
+.ow-rules{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px}
+.ow-stars{color:var(--gold); letter-spacing:2px}
+.ow-goal{display:grid; grid-template-columns:1.4fr 2fr auto; gap:14px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line); font-size:13px}
+.ow-goal:last-child{border:0} .ow-goal small{display:block; color:var(--muted); font-size:11.5px}
+.ow-goal .track{height:8px; border-radius:4px; background:var(--surface3); overflow:hidden} .ow-goal .track i{display:block; height:100%; background:var(--accent); border-radius:4px}
+.ow-goal.done .track i{background:var(--good)}
+@media (max-width:1100px){.ow-ups,.ow-biz-top{grid-template-columns:repeat(2,1fr)} .ow-rules{grid-template-columns:1fr}}
+.ow-ctl{margin-bottom:16px}
+.ow-ctl-grid{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:18px; margin-top:12px}
+.ow-g{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:flex-end; padding:8px 0; border-bottom:1px solid var(--line)}
+.ow-g>span:first-child{flex:1; min-width:150px; align-self:center}
+.ow-cap>small{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:3px}
+.ow-g:last-child{border:0} .ow-g small{display:block; color:var(--muted); font-size:11.5px}
+.ow-g.closed>span:first-child{opacity:.5}
+.ow-g .seg{margin:0} .ow-g .seg button{padding:5px 9px; font-size:12px}
+.ow-tog{border:1px solid var(--line2); background:none; color:var(--good); border-radius:8px; padding:5px 10px; font:inherit; font-size:12px; font-weight:600; cursor:pointer; min-width:64px}
+.ow-tog.off{color:var(--bad)} .ow-tog:hover{background:var(--surface2)}
+.ow-promo{display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:var(--bg); border:1px solid var(--line); border-radius:11px; padding:10px 12px; margin-bottom:8px; color:inherit; font:inherit; cursor:pointer}
+.ow-promo:hover{border-color:var(--line2); background:var(--surface2)}
+.ow-promo span{flex:1} .ow-promo small{display:block; color:var(--muted); font-size:11.5px; margin-top:1px}
+.ow-promo em{font-style:normal; font-weight:600; font-variant-numeric:tabular-nums; color:var(--gold); white-space:nowrap}
+.ow-promo.live{border-color:var(--accent); cursor:default} .ow-promo.live em{color:var(--accent)}
+.ow-acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.ow-acts button{border:1px solid var(--line2); background:var(--surface2); color:inherit; border-radius:8px; padding:6px 11px; font:inherit; font-size:12px; cursor:pointer}
+.ow-acts button:hover{border-color:var(--accent)} .ow-acts button.warn:hover{border-color:var(--bad); color:var(--bad)}
+@media (max-width:1100px){.ow-ctl-grid{grid-template-columns:1fr}}
+.ow-stats .seg{flex-wrap:wrap}
+.ow-stats .rowl{font-size:13px; min-width:640px} .ow-stats #owStats{overflow-x:auto}
+.ow-stats u{text-decoration:none} .ow-stats b[data-id]{cursor:pointer; font-weight:600} .ow-stats b[data-id]:hover{color:var(--accent)}
+.ow-stats h4{margin:16px 0 4px; font-size:13px; font-weight:600}
+.ow-kv{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.ow-kv>div{background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:10px 12px}
+.ow-kv b{display:block; font-size:17px; font-weight:600; margin-top:4px; font-variant-numeric:tabular-nums}
+.ow-kv small{display:block; color:var(--muted); font-size:11.5px; margin-top:2px}
+.ow-bar{display:inline-block; height:8px; border-radius:4px; background:var(--violet); vertical-align:middle; margin-right:8px; min-width:2px}
+.ow-card .kv small{display:block; color:var(--muted); font-size:11px}
+.ow-card .by{margin-top:10px; color:var(--muted); font-size:12.5px; line-height:1.6}
+@media (max-width:1100px){.ow-kv{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:1100px){.ow-main{grid-template-columns:1fr}}
 
 /* ---------- account ---------- */
@@ -403,6 +503,7 @@ body:not(.owner) nav [data-go="owner"]{display:none}
   <div class="mode" id="mode" title="Play the games yourself, or run the casino and watch the guests"><button data-m="player" class="on">Player</button><button data-m="owner">Owner</button></div>
   <nav>
     <button data-go="owner"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20V9l8-5 8 5v11M9 20v-6h6v6M4 20h16"/></svg><span>Casino floor</span></button>
+    <button data-go="empire"><svg class="ic" viewBox="0 0 24 24"><path d="M3 20h18M5 20V10l4-3v13M11 20V5l4 3v12M17 20v-8l3 2v6"/></svg><span>All casinos</span></button>
     <button data-go="lobby" class="active"><svg class="ic" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span>Lobby</span></button>
     <button data-go="blackjack"><svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="6" width="10" height="14" rx="2"/><path d="M9 4.2l9.2 2.4a2 2 0 0 1 1.4 2.5L17 18"/></svg><span>Blackjack</span></button>
     <button data-go="roulette"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3.5v6M12 14.5v6M3.5 12h6M14.5 12h6"/></svg><span>Roulette</span></button>
@@ -412,6 +513,8 @@ body:not(.owner) nav [data-go="owner"]{display:none}
     <div class="nav-sep"></div>
     <button data-go="account"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4v16h16M7.500 15l4-4 3 3 5-6"/></svg><span>Account</span></button>
   </nav>
+  <div id="casList"></div>
+  <button class="acct" id="acctBtn" title="Switch account or create a new one"><i id="acctAv">G</i><span><b id="acctName">Guest</b><small>Accounts</small></span></button>
   <div class="side-foot">Play credits only.<br>No real money, nothing to buy.</div>
 </aside>
 
@@ -424,6 +527,12 @@ body:not(.owner) nav [data-go="owner"]{display:none}
       <div><span class="lbl">Balance</span><b id="bal">0</b></div>
       <span class="float" id="balFloat"></span>
     </div>
+    <button class="btn ghost" id="alertBtn" title="Choose which pop-up messages you get" aria-label="Choose which pop-up messages you get" style="padding:10px 12px">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+    </button>
+    <button class="btn ghost" id="ambBtn" title="Background music on / off" aria-label="Background music on or off" style="padding:10px 12px">
+      <svg class="ic" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>
+    </button>
     <button class="btn ghost" id="sndBtn" title="Sound on / off" aria-label="Sound on or off" style="padding:10px 12px">
       <svg class="ic" viewBox="0 0 24 24"><path d="M4 9.500h3l4-3.500v12l-4-3.500H4z"/><path id="sndOn" d="M15 9a4 4 0 0 1 0 6M17.500 6.500a7.500 7.500 0 0 1 0 11"/><path id="sndOff" d="M15.500 9.500l5 5M20.500 9.500l-5 5"/></svg>
     </button>
@@ -472,6 +581,7 @@ body:not(.owner) nav [data-go="owner"]{display:none}
             <button class="btn" id="bjHit" disabled>Hit<kbd>H</kbd></button>
             <button class="btn" id="bjStand" disabled>Stand<kbd>S</kbd></button>
             <button class="btn" id="bjDouble" disabled>Double<kbd>D</kbd></button>
+            <button class="btn" id="bjSplit" disabled title="With two cards of the same value: play them as two hands, each with its own bet">Split<kbd>P</kbd></button>
           </div>
           <button class="switch" id="bjCountBtn"><span>Card count<small>Show the Hi-Lo running and true count</small></span><i></i></button>
           <button class="switch" id="bjProBtn"><span>Pro player<small>Bets by the count and plays basic strategy</small></span><i></i></button>
@@ -606,7 +716,7 @@ body:not(.owner) nav [data-go="owner"]{display:none}
 
     <section id="owner">
       <div class="panel ow-head">
-        <div><span class="lbl">Casino time</span><div class="ow-clock" id="owClock">–</div><div class="ow-sub" id="owSub"></div></div>
+        <div><span class="lbl">Casino time</span><div class="ow-clock" id="owClock">–</div><div class="ow-sub" id="owSub"></div><div class="ow-sub" id="owSaved" style="font-size:12px"></div></div>
         <span class="spacer"></span>
         <div><span class="lbl">Speed of time</span>
           <div class="seg" id="owSpeed" style="margin:6px 0 0"><button data-s="0">Pause</button><button data-s="1">1 min/s</button><button data-s="5" class="on">5 min/s</button><button data-s="20">20 min/s</button><button data-s="60">1 hour/s</button></div></div>
@@ -614,17 +724,29 @@ body:not(.owner) nav [data-go="owner"]{display:none}
       <div class="stats">
         <div class="panel stat"><span class="lbl">Guests inside</span><b id="owIn">0</b></div>
         <div class="panel stat"><span class="lbl">Profit today</span><b id="owToday">0</b></div>
-        <div class="panel stat"><span class="lbl">Profit all time</span><b id="owTotal">0</b></div>
+        <div class="panel stat"><span class="lbl">Shared wallet</span><b id="owTotal">0</b></div>
         <div class="panel stat"><span class="lbl">Bets today</span><b id="owBets">0</b></div>
         <div class="panel stat"><span class="lbl">Wagered today</span><b id="owTurn">0</b></div>
         <div class="panel stat"><span class="lbl">Visits today</span><b id="owVisits">0</b></div>
       </div>
-      <div class="two" style="margin-top:0">
-        <div class="panel"><div class="chart-head"><div><h3>House profit</h3><p>Running total, last two days of casino time.</p></div></div>
-          <div class="chart-wrap"><canvas class="ow-chart" id="owChartP"></canvas><div class="tip" id="owTipP"></div></div></div>
-        <div class="panel"><div class="chart-head"><div><h3>Guests in the casino</h3><p>How busy the floor is through the day.</p></div></div>
-          <div class="chart-wrap"><canvas class="ow-chart" id="owChartN"></canvas><div class="tip" id="owTipN"></div></div></div>
+      <div class="panel ow-ctl">
+        <div class="chart-head" style="margin:0"><div><h3>Run the floor</h3><p>Your decisions change what the guests do. Close a game, set the highest bet a table accepts, or spend money to pull people in.</p></div></div>
+        <div class="ow-ctl-grid" id="owCtl"></div>
       </div>
+      <div class="panel ow-biz">
+        <div class="chart-head" style="margin:0"><div><h3>Improve the business</h3><p>Spend what the casino has earned to make it bigger and better. There is no way to lose — take your time.</p></div>
+          <span class="spacer"></span>
+          <button class="btn ghost" id="owOpen" style="padding:7px 12px" title="Open one more casino. The ones you already have keep running.">Open another casino</button>
+          <button class="btn ghost" id="owRename" style="padding:7px 12px">Rename</button>
+          <button class="btn ghost" id="owReset" style="padding:7px 12px" title="Close the casino you are looking at for good">Close this casino</button></div>
+        <div id="owBiz"></div>
+      </div>
+      <div class="panel" style="margin-bottom:16px">
+        <div class="chart-head" style="margin:0; flex-wrap:wrap"><div><h3>Live charts</h3><p>Each chart has a menu: choose what it shows. They move as the casino runs.</p></div><span class="spacer"></span>
+          <div class="seg" id="owRange" style="margin:0" title="How far back the charts go"><button data-v="72">12 hours</button><button data-v="288">2 days</button><button data-v="1008">1 week</button><button data-v="2016">2 weeks</button><button data-v="0" title="Everything since this casino opened">All</button></div>
+          <div class="seg" id="owNch" style="margin:0" title="How many charts to show"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button></div></div>
+      </div>
+      <div class="two" id="owCharts" style="margin-top:0"></div>
       <div class="ow-main">
         <div class="panel">
           <div class="chart-head" style="margin:0"><div><h3>Guests</h3><p>Click a guest to follow them. Green results are good for the house.</p></div>
@@ -638,8 +760,35 @@ body:not(.owner) nav [data-go="owner"]{display:none}
           <div class="ow-feed" id="owFeed"></div>
         </div>
       </div>
-      <div class="panel ow-games"><h3>By game</h3><div id="owGames" style="margin-top:8px"></div>
+      <div class="panel ow-stats">
+        <div class="chart-head" style="margin:0"><div><h3>Statistics</h3><p id="owStatSub">Everything since you opened the doors.</p></div>
+          <div class="seg" id="owStatTab"><button data-t="over" class="on">Overview</button><button data-t="games">Games</button><button data-t="types">Guest types</button><button data-t="reasons">Departures</button><button data-t="hours">Hours</button><button data-t="days">Days</button><button data-t="money">Finances</button><button data-t="records">Records</button><button data-t="goals">Goals</button></div></div>
+        <div id="owStats" style="margin-top:12px"></div>
         <div class="hint">Roulette, blackjack and Drift are played against the house. At poker the guests play each other and the house only keeps a small cut of each pot. Coin Flip is left off the floor because its odds favour the player.</div></div>
+    </section>
+
+    <section id="empire">
+      <div class="panel ow-head">
+        <div><span class="lbl">Casino time</span><div class="ow-clock" id="emClock">–</div><div class="ow-sub" id="emSub"></div></div>
+        <span class="spacer"></span>
+        <div><span class="lbl">Speed of time</span>
+          <div class="seg" id="emSpeed" style="margin:6px 0 0"><button data-s="0">Pause</button><button data-s="1">1 min/s</button><button data-s="5">5 min/s</button><button data-s="20">20 min/s</button><button data-s="60">1 hour/s</button></div></div>
+      </div>
+      <div class="stats" id="emTiles"></div>
+      <div class="panel" style="margin-bottom:16px">
+        <div class="chart-head" style="margin:0; flex-wrap:wrap"><div><h3>Live charts, all casinos together</h3><p>Each chart has a menu: choose what it shows. Every casino is added up; reputation is the average.</p></div><span class="spacer"></span>
+          <div class="seg" id="emRange" style="margin:0"><button data-v="72">12 hours</button><button data-v="288">2 days</button><button data-v="1008">1 week</button><button data-v="2016">2 weeks</button><button data-v="0">All</button></div>
+          <div class="seg" id="emNch" style="margin:0" title="How many charts to show"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button></div></div>
+      </div>
+      <div class="two" id="emCharts" style="margin-top:0"></div>
+      <div class="panel ow-ctl">
+        <div class="chart-head" style="margin:0"><div><h3>Rules for every casino</h3><p>What you set here is applied to all your casinos at once, and a casino you open later starts with the same rules. You can still change one casino on its own floor.</p></div></div>
+        <div class="ow-ctl-grid" id="emRules"></div>
+        <div class="ow-rules" id="emHouse"></div>
+      </div>
+      <div class="panel ow-stats" style="margin-bottom:16px"><h3>Casino by casino</h3><p style="margin:2px 0 0; color:var(--muted); font-size:12.5px">Click a casino to walk onto its floor.</p><div id="emCas" style="margin-top:10px; overflow-x:auto"></div></div>
+      <div class="panel ow-stats" style="margin-bottom:16px"><h3>Money</h3><p style="margin:2px 0 0; color:var(--muted); font-size:12.5px">Where the shared wallet came from, since each casino opened.</p><div id="emMoney" style="margin-top:10px; overflow-x:auto"></div></div>
+      <div class="panel ow-stats"><h3>Games</h3><p style="margin:2px 0 0; color:var(--muted); font-size:12.5px">Every table in every casino, added up.</p><div id="emGames" style="margin-top:10px; overflow-x:auto"></div></div>
     </section>
 
     <section id="account">
@@ -667,6 +816,24 @@ body:not(.owner) nav [data-go="owner"]{display:none}
   </main>
 </div>
 <div id="toast"></div>
+<div id="alerts" aria-live="polite"></div>
+<div class="dlg" id="alertDlg" hidden>
+  <div class="panel dlg-box" role="dialog" aria-label="Pop-up messages">
+    <div class="chart-head" style="margin:0"><div><h3>Pop-up messages</h3><p>Switch off the ones you do not want. Everything still shows up in the activity list and the statistics.</p></div>
+      <button class="btn ghost" id="alertClose" style="margin-left:auto; padding:7px 12px">Close</button></div>
+    <div id="alertList" style="margin-top:12px"></div>
+    <div style="display:flex; gap:8px"><button class="btn ghost" id="alertAll" style="flex:1">All on</button><button class="btn ghost" id="alertNone" style="flex:1">All off</button></div>
+  </div>
+</div>
+<div class="dlg" id="acctDlg" hidden>
+  <div class="panel dlg-box" role="dialog" aria-label="Accounts">
+    <div class="chart-head" style="margin:0"><div><h3>Accounts</h3><p>Each account has its own wallet, play history and casino. They are saved on this computer only, so there is no password.</p></div>
+      <button class="btn ghost" id="acctClose" style="margin-left:auto; padding:7px 12px">Close</button></div>
+    <div id="acctList" style="margin-top:12px"></div>
+    <form id="acctNew" class="acct-new"><input id="acctInput" maxlength="18" placeholder="Name for a new account" autocomplete="off"><button class="btn" type="submit">Create</button></form>
+    <div class="hint" id="acctHint"></div>
+  </div>
+</div>
 <canvas id="fx"></canvas>
 
 <script>
@@ -683,7 +850,22 @@ const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + fmt(Math.abs(n));
 let SPEED = 1;   // pause multiplier (1 = normal)
 const sleep = ms => new Promise(r => setTimeout(r, ms * SPEED));
 const TAU = Math.PI * 2;
-const store = { get(k) { try { return localStorage.getItem('lumen.' + k); } catch { return null; } }, set(k, v) { try { localStorage.setItem('lumen.' + k, v); } catch {} } };
+const LS = {
+  get(k) { try { return localStorage.getItem('lumen.' + k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem('lumen.' + k, v); return true; } catch { return false; } },
+  keys() { try { return Object.keys(localStorage).filter(k => k.startsWith('lumen.')).map(k => k.slice(6)); } catch { return []; } },
+  del(k) { try { localStorage.removeItem('lumen.' + k); } catch {} }
+};
+/* Accounts: each one keeps its own wallet, history, settings and casino. Everything stays on this computer. */
+let ACCTS = [];
+try { const a = JSON.parse(LS.get('accounts') || '[]'); if (Array.isArray(a)) ACCTS = a.filter(x => x && x.id && x.name); } catch {}
+if (!ACCTS.length) {
+  ACCTS = [{ id: 'a1', name: 'Guest', made: Date.now() }];
+  for (const k of LS.keys()) if (k !== 'accounts' && k !== 'account') { LS.set('a1.' + k, LS.get(k)); LS.del(k); }    // what was saved before accounts existed becomes the first account
+  LS.set('accounts', JSON.stringify(ACCTS));
+}
+const ACCT = ACCTS.find(a => a.id === LS.get('account')) || ACCTS[0];
+const store = { get: k => LS.get(ACCT.id + '.' + k), set: (k, v) => LS.set(ACCT.id + '.' + k, v) };
 
 /* ---------- account history ---------- */
 const GAMES = { blackjack: 'Blackjack', roulette: 'Roulette', drift: 'Drift', coinflip: 'Coin Flip', poker: 'Poker', refill: 'Refill', start: 'Start' };
@@ -694,12 +876,21 @@ try { const h = JSON.parse(store.get('hist') || '[]'); if (Array.isArray(h)) HIS
 if (!HIST.length) HIST.push({ t: Date.now(), b: balance, d: 0, g: 'start' });
 function saveHist() { if (HIST.length > 20000) HIST = HIST.slice(-20000); store.set('hist', JSON.stringify(HIST)); }
 // d = net result of the round (winnings minus stake)
+let recAlert = -1e9, balPeak = HIST.reduce((m, h) => Math.max(m, h.b), 0);
 function record(g, d) {
   HIST.push({ t: Date.now(), b: balance, d: Math.round(d * 100) / 100, g }); saveHist();
   if (g !== 'refill' && d) {
     const f = $('#balFloat'); f.textContent = signed(d); f.className = 'float ' + (d > 0 ? 'good' : 'bad');
     void f.offsetWidth; f.classList.add('go');
+    // player mode: tell the player about the moments that matter
+    const before = balance - d, now = performance.now();
+    if (now - recAlert > 15000) {
+      if (d >= 200 && d >= before * .25) { recAlert = now; alertMsg('good', 'Big win', `${GAMES[g]} just paid you ${signed(d)}.`); }
+      else if (d > 0 && HIST.length > 10 && balance > balPeak) { recAlert = now; alertMsg('vip', 'New record balance', `You have never had this much: ${fmt(balance)}.`); }
+      else if (d < 0 && balance < 100 && before >= 100) { recAlert = now; alertMsg('bad', 'Running low', `Only ${fmt(balance)} left. You can refill from the wallet.`); }
+    }
   }
+  balPeak = Math.max(balPeak, balance);
   refreshAccount();
 }
 
@@ -815,6 +1006,11 @@ const sfx = {
   allin() { sfx.chips(7); tone(110, .5, { vol: .12, at: .1, to: 70 }); },
   turn() { tone(880, .12, { type: 'triangle', vol: .07 }); tone(1175, .18, { type: 'triangle', vol: .07, at: .1 }); },                           // your turn
   deal(n) { for (let i = 0; i < n; i++) noise(.08, { vol: .12, freq: 2600, to: 1000, q: .8, at: i * .07 }); },
+  // Alerts: something important happened
+  alertGood() { tone(784, .25, { type: 'triangle', vol: .1 }); tone(1175, .4, { type: 'triangle', vol: .1, at: .12 }); },
+  alertBad() { tone(392, .28, { type: 'triangle', vol: .11 }); tone(311, .5, { type: 'triangle', vol: .11, at: .16 }); },
+  alertInfo() { tone(1047, .5, { vol: .08 }); tone(2093, .35, { vol: .025 }); },
+  alertVip() { [659, 880, 1109, 1319].forEach((f, i) => { tone(f, .5, { type: 'triangle', vol: .09, at: i * .09 }); }); tone(2637, .6, { vol: .03, at: .36 }); },
   // Drift: a soft hum that rises in pitch with the multiplier
   driftStart() {
     const c = ac(); if (!c) return; sfx.driftStop();
@@ -834,8 +1030,106 @@ const sfx = {
 };
 for (const k in sfx) { const f = sfx[k]; sfx[k] = (...a) => { try { f(...a); } catch {} }; }   // a sound must never break a game
 function sndUI() { $('#sndOn').style.display = SND.on ? '' : 'none'; $('#sndOff').style.display = SND.on ? 'none' : ''; $('#sndBtn').style.color = SND.on ? '' : 'var(--faint)'; }
-$('#sndBtn').onclick = () => { SND.on = !SND.on; store.set('sound', SND.on ? '1' : '0'); if (!SND.on) sfx.driftStop(); sndUI(); toast(SND.on ? 'Sound on' : 'Sound off'); };
+$('#sndBtn').onclick = () => { SND.on = !SND.on; store.set('sound', SND.on ? '1' : '0'); if (!SND.on) sfx.driftStop(); sndUI(); ambSync(); toast(SND.on ? 'Sound on' : 'Sound off'); };
 sndUI();
+
+/* ---------- background ambience: slow generated chords, plus a quiet crowd in owner mode ---------- */
+const AMB = { on: store.get('ambient') !== '0', gain: null, crowd: null, next: 0, i: 0, started: false };
+const AMB_CHORDS = {
+  player: [[48, 55, 64, 71], [45, 52, 60, 67], [41, 53, 60, 69], [43, 50, 59, 66]],      // calm and open
+  owner: [[50, 57, 65, 72], [43, 53, 62, 70], [48, 55, 64, 70], [41, 53, 60, 69]]        // a warmer lounge feel
+};
+const midiHz = m => 440 * Math.pow(2, (m - 69) / 12);
+function ambSync() {
+  if (!AMB.gain || !SND.ctx) return;
+  const t = SND.ctx.currentTime, live = AMB.on && SND.on;
+  AMB.gain.gain.setTargetAtTime(live ? 1 : 0, t, .4);
+  const guests = typeof OW !== 'undefined' && OW.on && OW.speed ? OW.in.length : 0;
+  AMB.crowd.gain.setTargetAtTime(Math.min(.05, guests * .0028), t, 1.5);
+}
+function ambTick() {
+  try {
+    if (!AMB.started || !AMB.on) return;
+    const c = ac(); if (!c) return;
+    if (!AMB.gain) {
+      AMB.gain = c.createGain(); AMB.gain.gain.value = 0; AMB.gain.connect(SND.master);
+      // crowd murmur: filtered noise whose level follows how many guests are inside
+      const b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = b.getChannelData(0); let last = 0;
+      for (let i = 0; i < d.length; i++) { last = last * .98 + (Math.random() * 2 - 1) * .02; d[i] = last * 12; }
+      const s = c.createBufferSource(), f = c.createBiquadFilter(); AMB.crowd = c.createGain(); AMB.crowd.gain.value = 0;
+      s.buffer = b; s.loop = true; f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = .5; s.connect(f); f.connect(AMB.crowd); AMB.crowd.connect(AMB.gain); s.start();
+    }
+    ambSync();
+    const t = c.currentTime;
+    if (t >= AMB.next) {
+      const owner = typeof OW !== 'undefined' && OW.on, set = AMB_CHORDS[owner ? 'owner' : 'player'], ch = set[AMB.i++ % set.length];
+      AMB.next = t + 8;
+      ch.forEach((m, k) => {
+        const o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter(), hz = midiHz(m);
+        o.type = 'sine'; o2.type = 'triangle'; o.frequency.value = hz; o2.frequency.value = hz * 1.003; f.type = 'lowpass'; f.frequency.value = 900;
+        const v = k === 0 ? .05 : .03, a = t + k * .35;
+        g.gain.setValueAtTime(0, a); g.gain.linearRampToValueAtTime(v, a + 3.5); g.gain.linearRampToValueAtTime(v * .7, a + 7); g.gain.linearRampToValueAtTime(0, a + 12);
+        o.connect(g); o2.connect(f); f.connect(g); g.connect(AMB.gain); o.start(a); o2.start(a); o.stop(a + 12.2); o2.stop(a + 12.2);
+      });
+      // a soft bell on one of the chord notes, an octave or two up, now and then
+      if (Math.random() < .7) {
+        const hz = midiHz(ch[1 + Math.floor(Math.random() * 3)] + 12 * (1 + Math.floor(Math.random() * 2))), a = t + 1 + Math.random() * 5, o = c.createOscillator(), g = c.createGain();
+        o.frequency.value = hz; g.gain.setValueAtTime(0, a); g.gain.linearRampToValueAtTime(.022, a + .03); g.gain.exponentialRampToValueAtTime(.0001, a + 3.5);
+        o.connect(g); g.connect(AMB.gain); o.start(a); o.stop(a + 3.6);
+      }
+    }
+    // owner mode: the odd chip or glass somewhere on the floor
+    if (typeof OW !== 'undefined' && OW.on && OW.speed && SND.on && Math.random() < Math.min(.6, OW.in.length / 30)) {
+      if (Math.random() < .75) { noise(.03, { vol: .025, freq: 4200, q: 2, at: Math.random() }); tone(2200 + Math.random() * 500, .05, { type: 'triangle', vol: .015, at: Math.random() }); }
+      else tone(3000 + Math.random() * 900, .35, { vol: .012, at: Math.random() });
+    }
+  } catch {}
+}
+setInterval(ambTick, 1000);
+// browsers only allow sound after the first click or key press
+for (const ev of ['pointerdown', 'keydown']) window.addEventListener(ev, () => { if (!AMB.started) { AMB.started = true; ambTick(); } }, { passive: true });
+function ambUI() { $('#ambBtn').classList.toggle('off', !AMB.on); }
+$('#ambBtn').onclick = () => { AMB.on = !AMB.on; store.set('ambient', AMB.on ? '1' : '0'); ambUI(); ambSync(); if (AMB.on) { AMB.next = 0; ambTick(); } toast(AMB.on ? 'Background music on' : 'Background music off'); };
+ambUI();
+
+/* ---------- alerts: a message card with a sound, for the things worth looking up for ---------- */
+window.addEventListener('keydown', e => { if (e.key === 'Escape') { [...$('#alerts').children].forEach(a => a.close && a.close()); $('#acctDlg').hidden = true; $('#alertDlg').hidden = true; } });
+let alertLast = 0;
+// what kinds of message exist, and how a message is recognised by its title; the player chooses which kinds pop up
+const ALERT_CATS = [
+  ['arrive', 'A high roller arrives', /^High roller/], ['bet', 'One very big bet is won or lost', /^Big win on the floor|^Big bet lost/],
+  ['leave', 'A guest leaves far ahead, far behind or broke', /^A guest|^A big loser/], ['counter', 'Card counters', /card counter/i],
+  ['crowd', 'Record crowd or casino full', /^Busiest|is full$/], ['day', 'Summary when a day closes', /is closed$/],
+  ['biz', 'Promotions and upgrades starting or ending', /started$|ended$|is ready$/], ['goal', 'Goals reached', /^Goal reached/],
+  ['trouble', 'Setbacks: fines, breakdowns, bad press, power cuts', /^Trouble/],
+  ['player', 'Player mode: big win, record balance, running low', /^Big win$|^New record|^Running low/]
+];
+let ALERT_OFF = {}; try { ALERT_OFF = JSON.parse(store.get('alerts') || '{}') || {}; } catch {}
+function alertUI() {
+  $('#alertList').innerHTML = ALERT_CATS.map(([k, name]) => `<button class="switch${ALERT_OFF[k] ? '' : ' on'}" data-k="${k}"><span>${name}</span><i></i></button>`).join('');
+  $('#alertBtn').style.color = ALERT_CATS.every(([k]) => ALERT_OFF[k]) ? 'var(--faint)' : '';
+}
+function alertSet(f) { for (const [k] of ALERT_CATS) f(k); store.set('alerts', JSON.stringify(ALERT_OFF)); alertUI(); }
+$('#alertBtn').onclick = () => { alertUI(); $('#alertDlg').hidden = false; };
+$('#alertClose').onclick = () => { $('#alertDlg').hidden = true; };
+$('#alertDlg').addEventListener('pointerdown', e => { if (e.target === $('#alertDlg')) $('#alertDlg').hidden = true; });
+$('#alertList').onclick = e => { const b = e.target.closest('[data-k]'); if (b) alertSet(k => { if (k === b.dataset.k) ALERT_OFF[k] = !ALERT_OFF[k]; }); };
+$('#alertAll').onclick = () => alertSet(k => { ALERT_OFF[k] = false; });
+$('#alertNone').onclick = () => { alertSet(k => { ALERT_OFF[k] = true; }); [...$('#alerts').children].forEach(a => a.close && a.close()); };
+alertUI();
+function alertMsg(kind, title, text, id) {
+  const cat = ALERT_CATS.find(c => c[2].test(title)); if (cat && ALERT_OFF[cat[0]]) return;
+  const now = performance.now(); if (now - alertLast < 900) return; alertLast = now;     // at high speeds, only the first of a burst
+  const box = $('#alerts'), e = document.createElement('div');
+  e.className = 'alert ' + kind + (id ? ' click' : '');
+  e.innerHTML = `<button class="x" title="Close (Esc closes all)" aria-label="Close this message">×</button><b></b><span></span>`; e.children[1].textContent = title; e.children[2].textContent = text + (id ? ' — click to see them' : '');
+  const close = () => { e.classList.add('out'); setTimeout(() => e.remove(), 400); };
+  e.close = close;
+  e.onclick = ev => { if (!ev.target.closest('.x') && id && OW.on) { OW.sel = id; owRender(); $('#owFeedTitle').scrollIntoView({ behavior: 'smooth', block: 'start' }); } close(); };
+  box.prepend(e); while (box.children.length > 4) box.lastChild.remove();
+  setTimeout(close, 8000);
+  ({ good: sfx.alertGood, bad: sfx.alertBad, vip: sfx.alertVip, info: sfx.alertInfo })[kind]();
+}
 // every button and chip gets a soft click
 document.addEventListener('click', e => {
   const b = e.target.closest('button, .game, .wallet, .brand'); if (!b || b.disabled || b.classList.contains('cell')) return;
@@ -851,6 +1145,7 @@ const TITLES = {
   coin: ['Coin Flip', 'A fair coin — 50 / 50.'],
   poker: ['Poker', "No-limit Texas Hold'em against the bots."],
   owner: ['Casino floor', 'You own the place. Watch the guests come, play and go.'],
+  empire: ['All casinos', 'Everything you own, added up.'],
   account: ['Account', 'Your balance, round by round.']
 };
 let view = 'lobby';
@@ -863,7 +1158,7 @@ function show(name) {
   if (name === 'coin') cfDraw();
   if (name === 'poker' && PK.seated) pkRender();
 }
-document.addEventListener('click', e => { const t = e.target.closest('[data-go]'); if (t) show(OW.on ? 'owner' : t.dataset.go); });
+document.addEventListener('click', e => { const t = e.target.closest('[data-go]'); if (t) { show(OW.on ? (t.dataset.go === 'empire' ? 'empire' : 'owner') : t.dataset.go); if (OW.on && CAS.cur) (view === 'empire' ? emRender : owRender)(); } });
 
 /* ---------- chips & bet control ---------- */
 const chipColor = v => v >= 1000 ? '#ef4444' : v >= 500 ? '#f59e0b' : v >= 100 ? '#8b5cf6' : v >= 25 ? '#10b981' : v >= 10 ? '#3b82f6' : '#64748b';
@@ -912,7 +1207,8 @@ function checkBet(bet) {
 }
 
 /* ================= BLACKJACK ================= */
-const BJ = { shoe: [], p: [], d: [], bet: 0, phase: 'bet', hide: true, base: 0 };
+// BJ.p and BJ.bet are always the hand being played; after a split, BJ.hands holds every hand and BJ.hi says which one is active
+const BJ = { shoe: [], p: [], d: [], bet: 0, phase: 'bet', hide: true, base: 0, hands: [], hi: 0 };
 const bjBet = betControl($('#bjBet'), 25, 'bj');
 function newShoe() {
   const s = [];
@@ -928,7 +1224,7 @@ const hiLo = h => h.reduce((s, c) => s + (typeof c.r === 'number' && c.r <= 6 ? 
 let bjCountOn = store.get('count') === '1';
 function bjRunning() {
   const seen = BJ.hide ? BJ.d.filter((_, i) => i !== 1) : BJ.d;
-  return BJ.base + hiLo(BJ.p) + hiLo(seen);
+  return BJ.base + BJ.hands.reduce((s, h) => s + hiLo(h.c), 0) + hiLo(seen);
 }
 function bjTrue() { return bjRunning() / Math.max(BJ.shoe.length / 52, .25); }
 function bjCountUI() {
@@ -981,9 +1277,24 @@ function bjRenderHand(el, hand, hideSecond) {
   });
   el.dataset.n = hand.length;
 }
+// after a split: every hand side by side, the one being played highlighted
+function bjRenderSplit() {
+  const el = $('#bjP'); el.innerHTML = ''; el.classList.add('multi');
+  BJ.hands.forEach((h, i) => {
+    const w = document.createElement('div'), hd = document.createElement('div'), lab = document.createElement('small'), v = bjVal(h.c);
+    w.className = 'subhand' + (i === BJ.hi && BJ.phase === 'player' ? ' on' : '') + (h.out ? ' fin' : '');
+    hd.className = 'hand'; hd.dataset.n = h.n || 0; bjRenderHand(hd, h.c, false); h.n = h.c.length;
+    lab.innerHTML = `Hand ${i + 1} · <b>${v > 21 ? 'bust' : v}</b> · bet ${fmt(h.bet)}` + (h.out ? ` · <b class="${h.cls}">${h.out}</b>` : '');
+    w.append(hd, lab); el.appendChild(w);
+  });
+}
+const bjCardV = c => c.r === 'A' ? 11 : typeof c.r === 'string' ? 10 : c.r;
+const bjCanSplit = () => BJ.phase === 'player' && BJ.p.length === 2 && bjCardV(BJ.p[0]) === bjCardV(BJ.p[1]) && BJ.hands.length < 4 && balance >= BJ.bet;
+function bjFocus(i) { BJ.hi = i; BJ.p = BJ.hands[i].c; BJ.bet = BJ.hands[i].bet; }
 function bjRender() {
   bjRenderHand($('#bjD'), BJ.d, BJ.hide);
-  bjRenderHand($('#bjP'), BJ.p, false);
+  if (BJ.hands.length > 1) bjRenderSplit(); else { $('#bjP').classList.remove('multi'); bjRenderHand($('#bjP'), BJ.p, false); }
+  $('#bjSplit').disabled = !bjCanSplit();
   bjTotalUI('#bjPT', BJ.p, false); bjTotalUI('#bjDT', BJ.d, BJ.hide);
   bjShoeUI(); bjCountUI();
   const pl = BJ.phase === 'player', idle = BJ.phase === 'bet' || BJ.phase === 'done';
@@ -991,26 +1302,28 @@ function bjRender() {
   $('#bjHit').disabled = $('#bjStand').disabled = !pl;
   $('#bjDouble').disabled = !(pl && BJ.p.length === 2 && balance >= BJ.bet);
   bjBet.lock(!idle);
-  const spot = $('#bjSpot'), want = BJ.phase !== 'bet' && BJ.bet ? String(BJ.bet) : '';
+  const staked = BJ.hands.reduce((s, h) => s + h.bet, 0);       // the chip on the table shows everything you have riding, across all hands
+  const spot = $('#bjSpot'), want = BJ.phase !== 'bet' && staked ? String(staked) : '';
   if (spot.dataset.v !== want) {
     spot.dataset.v = want;
-    spot.innerHTML = want ? `<span class="chipc" style="--c:${chipColor(BJ.bet)}; display:grid; place-items:center">${short(BJ.bet)}</span>` : '';
+    spot.innerHTML = want ? `<span class="chipc" style="--c:${chipColor(staked)}; display:grid; place-items:center">${short(staked)}</span>` : '';
   }
 }
-function bjEnd(text, cls, payout) {
+function bjEnd(text, cls, payout, staked = BJ.bet) {
   BJ.hide = false; BJ.phase = 'done';
   if (payout) setBalance(balance + payout);
-  record('blackjack', payout - BJ.bet);
+  record('blackjack', payout - staked);
   say('#bjMsg', text, cls); bjRender();
-  if (cls === 'good') sfx.win(payout >= BJ.bet * 2.5, .15); else if (cls === 'bad') sfx.lose(.15); else sfx.push();
+  if (cls === 'good') sfx.win(payout >= staked * 2.5, .15); else if (cls === 'bad') sfx.lose(.15); else sfx.push();
   if (cls !== 'info') flash($('#felt'), cls === 'good' ? 'win' : 'lose');
 }
 async function bjDeal(override) {
   if (!(BJ.phase === 'bet' || BJ.phase === 'done')) return;
   const bet = typeof override === 'number' ? override : bjBet.value; if (!checkBet(bet)) return;
   setBalance(balance - bet);
-  BJ.base += hiLo(BJ.p) + hiLo(BJ.d);   // last hand's cards stay in the count
-  Object.assign(BJ, { bet, p: [], d: [], hide: true, phase: 'dealing' });
+  BJ.base += BJ.hands.reduce((s, h) => s + hiLo(h.c), 0) + hiLo(BJ.d);   // last round's cards stay in the count
+  Object.assign(BJ, { bet, p: [], d: [], hide: true, phase: 'dealing', hi: 0 });
+  BJ.hands = [{ c: BJ.p, bet, out: '', n: 0 }];
   $('#bjD').dataset.n = $('#bjP').dataset.n = 0;
   bjRender();
   if (BJ.shoe.length <= SHOE_CUT) {
@@ -1026,31 +1339,58 @@ async function bjDeal(override) {
   if (dv === 21) return bjEnd('Dealer has blackjack.', 'bad', 0);
   BJ.phase = 'player'; say('#bjMsg', 'Your move.'); bjRender();
 }
-async function bjStand() {
+// The hand being played is finished: move to the next split hand, or let the dealer play and pay every hand
+async function bjNext() {
   if (BJ.phase !== 'player') return;
-  BJ.phase = 'dealer'; BJ.hide = false; sfx.flip(); say('#bjMsg', 'Dealer plays…'); bjRender();
-  await sleep(550);
-  while (bjVal(BJ.d) < 17) { BJ.d.push(bjDraw()); sfx.card(); bjRender(); await sleep(600); }
-  const pv = bjVal(BJ.p), dv = bjVal(BJ.d), bet = BJ.bet;
-  if (dv > 21) bjEnd(`Dealer busts. +${fmt(bet)}`, 'good', bet * 2);
-  else if (pv > dv) bjEnd(`You win. +${fmt(bet)}`, 'good', bet * 2);
-  else if (pv === dv) bjEnd('Push — bet returned.', 'info', bet);
-  else bjEnd('Dealer wins.', 'bad', 0);
+  BJ.hands[BJ.hi].done = true;
+  for (;;) {
+    const i = BJ.hands.findIndex(h => !h.done); if (i < 0) break;
+    const h = BJ.hands[i]; bjFocus(i);
+    if (h.c.length === 1) { BJ.phase = 'dealing'; bjRender(); await sleep(380); h.c.push(bjDraw()); sfx.card(); BJ.phase = 'player'; }   // a split card gets its second card when its turn comes
+    if (h.aces || bjVal(h.c) === 21) { h.done = true; bjRender(); continue; }                                                              // split aces get one card each
+    say('#bjMsg', `Hand ${i + 1} of ${BJ.hands.length} — your move.`); bjRender(); return;
+  }
+  BJ.phase = 'dealer'; BJ.hide = false;
+  if (BJ.hands.some(h => bjVal(h.c) <= 21)) {                       // the dealer only draws if a hand is still standing
+    sfx.flip(); say('#bjMsg', 'Dealer plays…'); bjRender();
+    await sleep(550);
+    while (bjVal(BJ.d) < 17) { BJ.d.push(bjDraw()); sfx.card(); bjRender(); await sleep(600); }
+  }
+  const dv = bjVal(BJ.d); let pay = 0, staked = 0;
+  for (const h of BJ.hands) {
+    const pv = bjVal(h.c); staked += h.bet;
+    if (pv > 21) { h.out = 'Bust'; h.cls = 'bad'; }
+    else if (dv > 21 || pv > dv) { h.out = `Win +${fmt(h.bet)}`; h.cls = 'good'; pay += h.bet * 2; }
+    else if (pv === dv) { h.out = 'Push'; h.cls = ''; pay += h.bet; }
+    else { h.out = 'Lose'; h.cls = 'bad'; }
+  }
+  const net = pay - staked, one = BJ.hands.length === 1, h0 = BJ.hands[0];
+  const text = !one ? BJ.hands.map((h, i) => `Hand ${i + 1}: ${h.out.toLowerCase()}`).join(' · ') + ` — ${net ? signed(net) : 'even'} overall`
+    : h0.out === 'Bust' ? 'Bust.' : h0.out === 'Push' ? 'Push — bet returned.' : h0.out === 'Lose' ? 'Dealer wins.' : dv > 21 ? `Dealer busts. +${fmt(h0.bet)}` : `You win. +${fmt(h0.bet)}`;
+  bjEnd(text, net > 0 ? 'good' : net < 0 ? 'bad' : one ? 'info' : 'info', pay, staked);
 }
+function bjStand() { if (BJ.phase === 'player') return bjNext(); }
 function bjHit() {
   if (BJ.phase !== 'player') return;
-  BJ.p.push(bjDraw()); sfx.card();
-  const v = bjVal(BJ.p);
-  if (v > 21) return bjEnd('Bust.', 'bad', 0);
-  bjRender();
-  if (v === 21) bjStand();
+  BJ.p.push(bjDraw()); sfx.card(); bjRender();
+  if (bjVal(BJ.p) >= 21) bjNext();
 }
 function bjDouble() {
   if (BJ.phase !== 'player' || BJ.p.length !== 2 || balance < BJ.bet) return;
-  setBalance(balance - BJ.bet); BJ.bet *= 2; sfx.chip();
-  BJ.p.push(bjDraw()); sfx.card();
-  if (bjVal(BJ.p) > 21) return bjEnd('Bust.', 'bad', 0);
-  bjRender(); bjStand();
+  setBalance(balance - BJ.bet); BJ.bet *= 2; BJ.hands[BJ.hi].bet = BJ.bet; sfx.chip();
+  BJ.p.push(bjDraw()); sfx.card(); bjRender(); bjNext();
+}
+async function bjSplit() {
+  if (!bjCanSplit()) return;
+  const h = BJ.hands[BJ.hi], aces = h.c[0].r === 'A';
+  setBalance(balance - h.bet); sfx.chip();
+  const nh = { c: [h.c.pop()], bet: h.bet, out: '', n: 0, aces }; h.n = 0; h.aces = aces;
+  BJ.hands.splice(BJ.hi + 1, 0, nh);
+  BJ.phase = 'dealing'; say('#bjMsg', aces ? 'Aces split — one card each.' : 'Split — two hands now.'); bjRender();
+  await sleep(380);
+  h.c.push(bjDraw()); sfx.card(); BJ.phase = 'player';
+  if (aces || bjVal(h.c) === 21) return bjNext();
+  say('#bjMsg', `Hand ${BJ.hi + 1} of ${BJ.hands.length} — your move.`); bjRender();
 }
 /* ---------- Pro player: count-based bet sizing + basic strategy (dealer stands on 17, no splits) ---------- */
 function proUnits(tc) { return tc >= 5 ? 12 : tc >= 4 ? 8 : tc >= 3 ? 4 : tc >= 2 ? 2 : 1; }
@@ -1109,6 +1449,11 @@ async function proLoop() {
     } else if (BJ.phase === 'player') {
       await sleep(800);
       if (!proOn || BJ.phase !== 'player') continue;
+      if (bjCanSplit()) {                                       // basic strategy for pairs
+        const v = bjCardV(BJ.p[0]), u = bjCardV(BJ.d[0]);
+        const sp = v === 11 || v === 8 || (v === 9 && u <= 9 && u !== 7) || ((v === 2 || v === 3 || v === 7) && u <= 7) || (v === 6 && u <= 6) || (v === 4 && (u === 5 || u === 6));
+        if (sp) { $('#bjPro').textContent = `Pro player · pair of ${BJ.p[0].r}s against ${BJ.d[0].r} → split`; await bjSplit(); continue; }
+      }
       const canDouble = BJ.p.length === 2 && balance >= BJ.bet;
       const mv = proMove(BJ.p, BJ.d[0], bjTrue(), canDouble);
       $('#bjPro').textContent = `Pro player · ${bjVal(BJ.p)} against ${BJ.d[0].r} → ${mv === 'H' ? 'hit' : mv === 'S' ? 'stand' : 'double'}`;
@@ -1124,7 +1469,7 @@ $('#bjProBtn').onclick = () => {
   proLoop();
 };
 $('#bjCountBtn').onclick = () => { bjCountOn = !bjCountOn; store.set('count', bjCountOn ? '1' : '0'); bjCountUI(); };
-$('#bjDeal').onclick = () => bjDeal(); $('#bjHit').onclick = bjHit; $('#bjStand').onclick = bjStand; $('#bjDouble').onclick = bjDouble;
+$('#bjDeal').onclick = () => bjDeal(); $('#bjHit').onclick = bjHit; $('#bjStand').onclick = bjStand; $('#bjDouble').onclick = bjDouble; $('#bjSplit').onclick = bjSplit;
 bjRender();
 
 /* ================= ROULETTE ================= */
@@ -1917,7 +2262,138 @@ const OW_PACE = { roulette: .7, blackjack: .9, drift: 1, poker: .5 };
 const OW_PEAK = .2;   // arrivals per minute at the busiest hour
 const OW = { on: false, time: 0, speed: 5, acc: 0, lastReal: 0, lastRender: 0, seq: 0, in: [], gone: [], feed: [], series: [], sel: null, tab: 'in', dayFactor: 1,
   total: 0, day: { profit: 0, bets: 0, turn: 0, visits: 0 }, geo: {}, hover: {}, win: [],
-  games: { roulette: { bets: 0, turn: 0, profit: 0 }, blackjack: { bets: 0, turn: 0, profit: 0 }, drift: { bets: 0, turn: 0, profit: 0 }, poker: { bets: 0, turn: 0, profit: 0 } } };
+  stab: 'over', hr: 0, types: {}, reasons: {}, days: [], topW: [], topL: [],
+  hours: Array.from({ length: 24 }, () => ({ mins: 0, guests: 0, profit: 0, bets: 0, turn: 0, arr: 0 })),
+  all: { visits: 0, brought: 0, bets: 0, turn: 0, won: 0, lost: 0, push: 0, gone: 0, ahead: 0, behind: 0, stay: 0, peak: 0, peakT: 0, mins: 0, maxBet: null, bigWin: null, bigLoss: null },
+  games: {} };
+for (const g of ['roulette', 'blackjack', 'drift', 'poker']) OW.games[g] = { bets: 0, turn: 0, profit: 0, won: 0, lost: 0, big: 0, maxBet: 0 };
+// the owner's own decisions: which games are open, the highest bet each accepts (0 = no limit), and paid extras with the time they run out
+OW.ctl = {}; for (const g of ['roulette', 'blackjack', 'drift', 'poker']) OW.ctl[g] = { open: true, max: 0 };
+OW.promo = { drinks: 0, music: 0, ads: 0 }; OW.quiet = false; OW.all.spent = 0; OW.all.turned = 0; OW.lastPeakAlert = 0;
+const OW_PROMOS = {
+  drinks: { name: 'Free drinks', cost: 400, hours: 2, about: 'Guests stay longer and take fewer breaks.' },
+  music: { name: 'Live music', cost: 600, hours: 3, about: 'A few more people come in, and everyone bets a little bigger.' },
+  ads: { name: 'Advertise tonight', cost: 1500, hours: 6, about: 'Many more people come through the door.' }
+};
+// the business: reputation (0–100) brings people in, upgrades are bought once (or in levels) and add to the daily running cost
+OW.rep = 50; OW.up = { floor: 0, decor: 0, bar: 0, food: 0, vip: 0, cams: 0, hotel: 0, club: 0 }; OW.rules = { bj65: false, rl00: false }; OW.goals = {};
+Object.assign(OW.all, { costs: 0, invest: 0, side: 0, full: 0 }); OW.lastFullAlert = 0; OW.noSave = false;
+const OW_CAP = [25, 40, 60, 90], OW_RENT = 2000, OW_NEWCAS = 75000;
+// setbacks: things that go wrong now and then. broken games are in OW.ctl[g].fixAt; slow / dark are times until which fewer / no people come
+OW.trouble = { next: 0, slow: 0, dark: 0, n: 0 }; OW.all.fines = 0; OW.all.tax = 0;
+const OW_UPS = {
+  floor: { name: 'Bigger floor', costs: [12000, 40000, 120000], need: [0, 55, 70], keep: 500, about: l => l < 3 ? `Room for ${OW_CAP[l + 1]} guests at once instead of ${OW_CAP[l]}.` : `Room for ${OW_CAP[3]} guests at once.` },
+  decor: { name: 'Decor and lighting', costs: [8000, 25000, 70000], need: [0, 0, 60], keep: 250, about: () => 'Guests stay longer, richer guests come, and your reputation settles higher.' },
+  bar: { name: 'Cocktail bar', costs: [10000], need: [0], keep: 400, about: () => 'Every guest spends a little at the bar while they are inside.' },
+  food: { name: 'Restaurant', costs: [30000], need: [50], keep: 800, about: () => 'Guests stay longer and pay for dinner.' },
+  club: { name: 'Members club', costs: [20000], need: [50], keep: 450, about: () => 'Regulars come back more often.' },
+  cams: { name: 'Security cameras', costs: [15000], need: [0], keep: 300, about: () => 'Card counters and cheating crews are caught before they cost you money.' },
+  vip: { name: 'VIP lounge', costs: [60000], need: [65], keep: 1200, about: () => 'High rollers come far more often.' },
+  hotel: { name: 'Hotel rooms', costs: [90000], need: [70], keep: 1500, about: () => 'The floor stays busier late at night and in the morning, and the rooms earn a little every day.' }
+};
+const OW_RULES = {
+  bj65: { name: 'Blackjack pays 6:5', about: 'A dealt blackjack pays less, so you keep more — but blackjack players like it less.' },
+  rl00: { name: 'Add a double zero to roulette', about: 'One more losing pocket for every bet, so you keep more — but roulette players like it less.' }
+};
+const OW_GOALS = [
+  ['v100', 'Welcome 100 guests', () => [OW.all.visits, 100]], ['v1000', 'Welcome 1,000 guests', () => [OW.all.visits, 1000]], ['v5000', 'Welcome 5,000 guests', () => [OW.all.visits, 5000]],
+  ['m10', 'Have 10,000 in the bank', () => [OW.total, 10000]], ['m100', 'Have 100,000 in the bank', () => [OW.total, 100000]], ['m500', 'Have 500,000 in the bank', () => [OW.total, 500000]],
+  ['c25', 'Fill the floor with 25 guests', () => [OW.all.peak, 25]], ['c60', 'Have 60 guests inside at once', () => [OW.all.peak, 60]],
+  ['d7', 'Stay open for a week', () => [OW.all.mins / 1440, 7]], ['d30', 'Stay open for a month', () => [OW.all.mins / 1440, 30]],
+  ['r80', 'Reach a reputation of 80', () => [OW.rep, 80]],
+  ['up', 'Buy every upgrade', () => [Object.keys(OW_UPS).reduce((a, k) => a + OW.up[k], 0), Object.keys(OW_UPS).reduce((a, k) => a + OW_UPS[k].costs.length, 0)]]
+];
+const owCap = () => OW_CAP[OW.up.floor];
+/* Prices grow as the business grows, so it never gets easy:
+   - every casino you own makes everything 1.8 times dearer (upgrades, promotions) and running costs 1.35 times higher, in all casinos
+   - every upgrade a casino already has makes its next one 12% dearer
+   - each further casino costs 2.5 times the one before
+   - a profit tax is taken at midnight from every casino that had a winning day, and its rate climbs with the shared wallet */
+const owCount = () => Math.max(1, CAS.list.length);
+const owScale = () => Math.pow(1.8, owCount() - 1);
+const owUpsOwned = () => Object.keys(OW.up).reduce((a, k) => a + OW.up[k], 0);
+const owPrice = base => owNice(base * owScale() * Math.pow(1.12, owUpsOwned()));
+const owCasCost = () => owNice(OW_NEWCAS * Math.pow(2.5, owCount() - 1));
+const owTaxRate = () => Math.max(.08, Math.min(.25, .08 + .03 * Math.log2(Math.max(1, owBank() / 250000))));      // 8% up to 250,000 in the wallet, +3 points each time it doubles, at most 25%
+for (const k in OW_PROMOS) { const P = OW_PROMOS[k], base = P.cost; Object.defineProperty(P, 'cost', { get: () => owNice(base * owScale()) }); }
+const owUpkeep = () => Math.round((OW_RENT + Object.keys(OW_UPS).reduce((a, k) => a + OW.up[k] * OW_UPS[k].keep, 0)) * Math.pow(1.35, owCount() - 1));
+const owRepBase = () => 42 + OW.up.decor * 8 + OW.up.bar * 4 + OW.up.food * 6 + OW.up.hotel * 5 - (OW.rules.bj65 ? 6 : 0) - (OW.rules.rl00 ? 5 : 0);
+const owRep = d => { OW.rep = Math.max(0, Math.min(100, OW.rep + d)); };
+const owTables = () => OW.total + OW.all.spent + OW.all.costs + OW.all.invest + (OW.all.fines || 0) + (OW.all.tax || 0) - OW.all.side;      // what the games themselves have made
+// Something goes wrong. Bigger casinos get bigger bills.
+function owTrouble() {
+  const size = 1 + Object.keys(OW.up).reduce((a, k) => a + OW.up[k], 0) * .35, bill = (a, b) => owNice(rnd(a, b) * size), T = OW.trouble; T.n++;
+  const open = OW_GK.filter(g => OW.ctl[g].open && !OW.ctl[g].fixAt), kind = owPick(['tax', 'break', 'press', 'power', 'strike', 'cheat', 'pipe'], k => k === 'break' && !open.length ? 0 : k === 'power' ? .6 : 1);
+  let title, text, kindCls = 'bad';
+  if (kind === 'tax') { const a = bill(1200, 3500); owSpend(a, 'fines'); title = 'a tax inspection'; text = `The inspectors found mistakes in the books. You paid a fine of ${fmt(a)}.`; }
+  else if (kind === 'pipe') { const a = bill(900, 2800); owSpend(a, 'fines'); title = 'a burst pipe'; text = `Water came through the ceiling. The repair cost ${fmt(a)}.`; }
+  else if (kind === 'break') { const g = open[Math.floor(Math.random() * open.length)], c = OW.ctl[g]; c.open = false; c.fixAt = OW.time + Math.round(rnd(4, 9)) * 3600000;
+    title = `${GAMES[g].toLowerCase()} broke down`; text = `The ${GAMES[g].toLowerCase()} tables are closed for repairs for a few hours. You can pay to have them fixed right away in "Run the floor".`; }
+  else if (kind === 'press') { const a = rnd(4, 8); owRep(-a); title = 'a bad review'; text = `The local paper wrote something unkind. Your reputation dropped by ${a.toFixed(0)}.`; }
+  else if (kind === 'power') { const n = OW.in.length; for (const p of OW.in.slice()) owLeave(p, 'power cut'); T.dark = OW.time + 90 * 60000; owRep(-1.5);
+    title = 'a power cut'; text = `The lights went out. ${n === 1 ? 'The one guest' : 'All ' + n + ' guests'} inside went home, and nobody can come in for an hour and a half.`; }
+  else if (kind === 'strike') { T.slow = OW.time + 10 * 3600000; title = 'staff are off sick'; text = 'Half the dealers called in sick. For the next ten hours far fewer guests can be served.'; }
+  else if (OW.up.cams) { owRep(1); kindCls = 'good'; title = 'cheats were caught'; text = 'A crew tried to cheat at the tables, but your cameras spotted them before they took anything.'; }
+  else { const a = bill(2000, 6000); owSpend(a, 'fines'); title = 'a cheating crew'; text = `A crew cheated at the tables and walked out with ${fmt(a)}. Security cameras would have caught them.`; }
+  owAlert(kindCls, 'Trouble: ' + title, text);
+  OW.feed.push({ t: OW.time, id: 0, name: 'Trouble', g: 'move', txt: '— ' + title + '. ' + text, d: 0 }); if (OW.feed.length > 500) OW.feed.shift();
+}
+function owBuy(k) {
+  const U = OW_UPS[k], l = OW.up[k]; if (U.costs[l] == null) return; const cost = owPrice(U.costs[l]);
+  if (OW.rep < U.need[l]) { sfx.alertBad(); return toast(`${U.name} needs a reputation of ${U.need[l]} — this casino is at ${Math.round(OW.rep)}`); }
+  if (owBank() < cost) { sfx.alertBad(); return toast(`${U.name} costs ${fmt(cost)} — the shared wallet has ${fmt(Math.max(0, Math.round(owBank())))}`); }
+  owSpend(cost, 'invest'); OW.up[k]++; owRep(1.5);
+  alertMsg('vip', U.name + (U.costs.length > 1 ? ' — level ' + OW.up[k] : '') + ' is ready', `${U.about(l)} It adds ${fmt(U.keep)} a day to your running costs.`); owSave(); owRender();
+}
+function owRule(k) { OW.rules[k] = !OW.rules[k]; toast(`${OW_RULES[k].name}: ${OW.rules[k] ? 'on' : 'off'}`); owRender(); }
+/* Live charts. Every 10 casino minutes a sample is stored: t time, b bank, n guests, rep, tb tables profit, sd side income, tu wagered, bt bets, vs visits (all running totals),
+   g = profit per game, pg = guests at each game. A chart gets the sample and the one from an hour before. */
+OW.long = []; OW.longEvery = 1;      // the whole history: one sample every longEvery hours; when it gets long, every other sample is dropped and the gap doubles
+OW.charts = ['bank', 'guests', 'rep', 'wager', 'hour', 'arr']; OW.range = 288; OW.nch = 4; OW.vals = []; OW.goneShow = 200; OW.savedAt = 0; OW.saveOk = true;
+const OW_GK = ['roulette', 'blackjack', 'drift', 'poker'];
+const owSample = () => ({ t: OW.time, b: Math.round(OW.total), n: OW.in.length, rep: Math.round(OW.rep * 10) / 10, tb: Math.round(owTables()), sd: Math.round(OW.all.side), tu: Math.round(OW.all.turn), bt: OW.all.bets, vs: OW.all.visits,
+  g: OW_GK.map(k => Math.round(OW.games[k].profit)), pg: OW_GK.map(k => OW.in.filter(p => p.game === k).length) });
+const OW_CH = (() => {
+  const money = v => fmt(Math.round(v)), sg = v => signed(Math.round(v)), num = unit => v => fmt(Math.round(v)) + ' ' + unit, hrs = (s, p) => Math.max((s.t - p.t) / 3600000, 1 / 6), d = (s, p, k) => ((s[k] || 0) - (p[k] || 0)) / hrs(s, p);      // change per hour, whatever the gap between the two samples
+  const C = { teal: '#4fd1c5', violet: '#8b7cf6', gold: '#e7c27a', rose: '#f08ba0', blue: '#6aa8f0' };
+  const o = {
+    bank: { name: 'Money this casino has made', f: s => s.b, fmt: money, c: C.teal },
+    guests: { name: 'Guests inside', f: s => s.n, fmt: num('guests'), c: C.violet },
+    rep: { name: 'Reputation', f: s => s.rep == null ? 50 : s.rep, fmt: v => v.toFixed(1) + ' / 100', c: C.gold },
+    hour: { name: 'Profit per hour', f: (s, p) => (s.b - p.b) / hrs(s, p), fmt: sg, c: C.teal },
+    tables: { name: 'Profit from the tables (total)', f: s => s.tb || 0, fmt: sg, c: C.teal },
+    side: { name: 'Bar, food and rooms income (total)', f: s => s.sd || 0, fmt: money, c: C.gold },
+    wager: { name: 'Money wagered per hour', f: (s, p) => d(s, p, 'tu'), fmt: money, c: C.blue },
+    bets: { name: 'Bets per hour', f: (s, p) => d(s, p, 'bt'), fmt: num('bets'), c: C.blue },
+    avg: { name: 'Average bet (last hour)', f: (s, p) => d(s, p, 'bt') ? d(s, p, 'tu') / d(s, p, 'bt') : 0, fmt: money, c: C.blue },
+    arr: { name: 'Arrivals per hour', f: (s, p) => d(s, p, 'vs'), fmt: num('people'), c: C.violet }
+  };
+  OW_GK.forEach((k, i) => {
+    o['g' + i] = { name: `${GAMES[k]} profit (total)`, f: s => s.g ? s.g[i] : 0, fmt: sg, c: C.rose };
+    o['p' + i] = { name: `Guests at ${GAMES[k].toLowerCase()}`, f: s => s.pg ? s.pg[i] : 0, fmt: num('guests'), c: C.violet };
+  });
+  return o;
+})();
+const OW_LIMITS = [[100, '100'], [500, '500'], [2000, '2,000'], [0, 'No limit']];
+const OW_MINS = [[0, 'None'], [5, '5'], [25, '25'], [100, '100']];
+const owMin = g => OW.ctl[g].min || 0;
+// the two bet controls for one game, shared by the casino floor and the rules-for-every-casino panel (min / max = the value to highlight, or null when casinos differ)
+const owBetSegs = (g, min, max) => `<div class="ow-cap"><small>Lowest bet</small><div class="seg">${OW_MINS.map(([v, l]) => `<button data-g="${g}" data-min="${v}"${min === v ? ' class="on"' : ''}>${l}</button>`).join('')}</div></div>` +
+  `<div class="ow-cap"><small>Highest bet</small><div class="seg">${OW_LIMITS.map(([v, l]) => `<button data-g="${g}" data-max="${v}"${max === v ? ' class="on"' : ''}>${l}</button>`).join('')}</div></div>`;
+// lowest and highest bet must not cross: the one you just set wins and the other is lifted
+function owSetBet(g, key, v) { const c = OW.ctl[g]; c[key] = v; if (c.max && (c.min || 0) > c.max) { if (key === 'min') c.max = 0; else c.min = 0; } }
+const owAlert = (...a) => { if (OW.on && !OW.quiet) alertMsg(...a); };
+function owSpend(amt, bucket = 'spent') { OW.total = r2(OW.total - amt); OW.day.profit -= amt; OW.all[bucket] += amt; OW.day[bucket] = (OW.day[bucket] || 0) + amt; }
+// which game a guest goes to: one they like that is open, preferring tables that accept their usual bet
+function owChoose(p, T, not) {
+  const opts = Object.keys(T.games).filter(g => OW.ctl[g].open && g !== not && p.bank >= owMin(g));       // they cannot sit where they cannot cover the lowest bet
+  const rule = g => (g === 'blackjack' && OW.rules.bj65 ? .7 : 1) * (g === 'roulette' && OW.rules.rl00 ? .8 : 1)
+    * (owMin(g) > p.base ? (p.bank >= owMin(g) * 12 ? .4 : .08) : 1);                                      // a table dearer than their usual bet puts most of them off
+  return opts.length ? owPick(opts, g => T.games[g] * rule(g) * (OW.ctl[g].max && p.base > OW.ctl[g].max ? .15 : 1)) : null;
+}
+const owT = k => OW.types[k] || (OW.types[k] = { visits: 0, bets: 0, turn: 0, profit: 0, gone: 0, ahead: 0, stay: 0, brought: 0 });
+function owNewDay() { const d = { t: OW.time, profit: 0, bets: 0, turn: 0, visits: 0, peak: OW.in.length, left: 0, ahead: 0, tables: 0, side: 0, costs: 0, spent: 0, invest: 0 }; OW.days.push(d); if (OW.days.length > 120) OW.days.shift(); return d; }
+const owFind = id => OW.in.find(p => p.id === id) || OW.gone.find(p => p.id === id) || OW.topW.find(p => p.id === id) || OW.topL.find(p => p.id === id);
 const rnd = (a, b) => a + Math.random() * (b - a);
 const owPick = (items, wf) => { let tot = 0; for (const it of items) tot += wf(it); let x = Math.random() * tot; for (const it of items) { x -= wf(it); if (x <= 0) return it; } return items[items.length - 1]; };
 const owNice = v => v >= 1000 ? Math.round(v / 100) * 100 : v >= 100 ? Math.round(v / 25) * 25 : v >= 20 ? Math.round(v / 5) * 5 : Math.max(1, Math.round(v));   // chip-sized amounts
@@ -1928,21 +2404,46 @@ function owLog(p, g, txt, d) {
   OW.feed.push(e); if (OW.feed.length > 500) OW.feed.shift();
 }
 function owArrive() {
-  const T = owPick(OW_TYPES, t => t.w);
-  const roll = owNice(T.roll[0] * Math.pow(T.roll[1] / T.roll[0], Math.random()));    // most bring the smaller amounts, a few bring a lot
-  const game = owPick(Object.keys(T.games), g => T.games[g]);
+  const U = OW.up;
+  if (OW.in.length >= owCap()) {                                                          // no room: they are turned away at the door
+    OW.all.full++; owRep(-.05);
+    if (OW.time - OW.lastFullAlert > 8 * 3600000) { OW.lastFullAlert = OW.time; owAlert('info', 'The casino is full', `All ${owCap()} places are taken and people are being turned away.` + (U.floor < 3 ? ' A bigger floor would let them in.' : '')); }
+    return;
+  }
+  const T = owPick(OW_TYPES, t => t.w * (t.k === 'High roller' && U.vip ? 2.5 : 1) * (t.k === 'Regular' && U.club ? 1.5 : 1));
+  const roll = owNice(T.roll[0] * Math.pow(T.roll[1] / T.roll[0], Math.random()) * (1 + .12 * U.decor));    // most bring the smaller amounts, a few bring a lot
+  if (!Object.keys(T.games).some(g => OW.ctl[g].open)) { OW.all.turned++; owRep(-.05); return; }      // nothing they like is open, so they walk past
+  const game = null;
   const p = { id: ++OW.seq, name: OW_FIRST[Math.floor(Math.random() * OW_FIRST.length)] + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.',
     type: T.k, T, start: roll, bank: roll, net: 0, base: owNice(roll * rnd(T.bet[0], T.bet[1])), game,
-    stay: Math.round(rnd(T.stay[0], T.stay[1])), goal: roll * rnd(T.goal[0], T.goal[1]), stop: roll * rnd(T.stop[0], T.stop[1]),
+    stay: Math.round(rnd(T.stay[0], T.stay[1]) * (1 + .12 * U.decor) * (U.food ? 1.15 : 1)), goal: roll * rnd(T.goal[0], T.goal[1]), stop: roll * rnd(T.stop[0], T.stop[1]),
     skill: T.skill * rnd(.8, 1.2), breakP: rnd(.05, .3), colour: Math.random() < .5 ? 'red' : 'black',
-    mins: 0, rounds: 0, wstreak: 0, lstreak: 0, arrived: OW.time, left: 0, reason: '', log: [] };
+    mins: 0, rounds: 0, wstreak: 0, lstreak: 0, arrived: OW.time, left: 0, reason: '', log: [],
+    wag: 0, won: 0, lost: 0, push: 0, bigW: 0, bigL: 0, peak: roll, low: roll, maxBet: 0, by: {}, hist: [roll] };
+  p.game = owChoose(p, T);
+  if (!p.game) { OW.all.turned++; OW.all.priced = (OW.all.priced || 0) + 1; owRep(-.05); return; }        // every table they like asks for more than they have
+  if (T.k === 'High roller') owAlert('vip', 'High roller at the door', `${p.name} walked in with ${fmt(roll)} and bets around ${fmt(p.base)} a time.`, p.id);
   OW.in.push(p); OW.day.visits++;
-  owLog(p, 'arrive', `arrived with ${fmt(roll)} and sat down at ${GAMES[game].toLowerCase()}`, 0);
+  OW.all.visits++; OW.all.brought += roll; OW.hours[OW.hr].arr++;
+  const S = owT(T.k); S.visits++; S.brought += roll;
+  owLog(p, 'arrive', `arrived with ${fmt(roll)} and sat down at ${GAMES[p.game].toLowerCase()}`, 0);
 }
 function owLeave(p, reason) {
   p.left = OW.time; p.reason = reason;
-  OW.in.splice(OW.in.indexOf(p), 1); OW.gone.unshift(p); if (OW.gone.length > 150) OW.gone.pop();
+  OW.in.splice(OW.in.indexOf(p), 1); OW.gone.unshift(p);
+  if (OW.gone.length > 150) { const o = OW.gone[150]; o.log = o.log.slice(-25); o.hist = o.hist.slice(-60); }     // older guests keep the end of their story, so memory does not grow without end
+  if (OW.gone.length > 5000) OW.gone.pop();
   owLog(p, 'leave', `left after ${p.mins} min — ${reason}`, p.net);
+  // how they talk about the place afterwards
+  owRep(reason === 'cashed out a winner' ? .2 : reason === 'lost everything' ? -.2 : reason === 'hit their loss limit' ? -.06 : reason === 'their game was closed' ? -.4
+    : reason === 'asked to leave by you' ? (p.flag ? 0 : -.6) : p.net > 0 ? .12 : 0);
+  if (p.net >= 3000) owAlert('bad', 'A guest walked out a big winner', `${p.name} left with ${signed(Math.round(p.net))} of your money.`, p.id);
+  else if (p.net <= -3000) owAlert('good', 'A big loser went home', `${p.name} left ${fmt(Math.round(-p.net))} behind.`, p.id);
+  else if (reason === 'lost everything' && p.start >= 1000) owAlert('good', 'A guest lost everything', `${p.name} came with ${fmt(p.start)} and is going home with nothing.`, p.id);
+  const A = OW.all, S = owT(p.type), R = OW.reasons[reason] || (OW.reasons[reason] = { n: 0, net: 0, stay: 0 });
+  A.gone++; A.stay += p.mins; S.gone++; S.stay += p.mins; R.n++; R.net += p.net; R.stay += p.mins; OW.day.left++;
+  if (p.net > 0) { A.ahead++; S.ahead++; OW.day.ahead++; OW.topW.push(p); OW.topW.sort((a, b) => b.net - a.net); OW.topW.length = Math.min(OW.topW.length, 10); }
+  else if (p.net < 0) { A.behind++; OW.topL.push(p); OW.topL.sort((a, b) => a.net - b.net); OW.topL.length = Math.min(OW.topL.length, 10); }
 }
 // One bet by one guest. Returns nothing; updates the guest, the house and the logs.
 function owRound(p) {
@@ -1953,7 +2454,12 @@ function owRound(p) {
   else if (T.mode === 'tilt') m = 1 + .6 * Math.min(p.lstreak, 5);
   else if (T.mode === 'spread') m = [1, 1, 1, 1, 2, 2, 4, 8][Math.floor(Math.random() * 8)];
   else if (Math.random() < .2) m = rnd(.5, 2);                       // even steady bettors vary a bet now and then
+  if (OW.promo.music) m *= 1.2;
   let bet = Math.min(p.bank, owNice(p.base * m)); if (bet < 1) bet = p.bank;
+  const lim = OW.ctl[g].max;
+  if (lim && bet > lim) { bet = lim; if (p.base > lim) p.stay = Math.max(p.mins, p.stay - 1); }     // a big player at a small table gets bored sooner
+  const mn = owMin(g);
+  if (mn && bet < mn) { bet = Math.min(p.bank, mn); if (Math.random() < .5) p.stay = Math.max(p.mins, p.stay - 1); }      // made to bet more than they like, they do not stay as long
   bet = r2(bet);
   let d, txt, house;
   if (g === 'roulette') {
@@ -1963,13 +2469,13 @@ function owRound(p) {
     else if (x < longShot) { const k = Math.floor(Math.random() * 37); key = 'n' + k; label = 'number ' + k; }
     else if (x < longShot + .2) { const k = 1 + Math.floor(Math.random() * 3); if (Math.random() < .5) { key = 'd' + k; label = ['1st', '2nd', '3rd'][k - 1] + ' dozen'; } else { key = 'c' + k; label = 'a column'; } }
     else { [key, label] = [['red', 'red'], ['black', 'black'], ['odd', 'odd'], ['even', 'even'], ['low', '1–18'], ['high', '19–36']][Math.floor(Math.random() * 6)]; }
-    const n = Math.floor(Math.random() * 37);
-    d = bet * rlMult(key, n) - bet; house = -d;
-    txt = `on ${label}; the ball landed on ${n}${n ? ' ' + colorOf(n) : ''}`;
+    const n = Math.floor(Math.random() * (OW.rules.rl00 ? 38 : 37)), zz = n === 37;      // pocket 37 is the double zero, when you have added one
+    d = bet * (zz ? 0 : rlMult(key, n)) - bet; house = -d;
+    txt = `on ${label}; the ball landed on ${zz ? '00' : n}${n && !zz ? ' ' + colorOf(n) : ''}`;
   } else if (g === 'blackjack') {
     // outcome odds of a real blackjack hand; weaker players lose a little more often, a card counter a little less
     const edge = .005 + (1 - p.skill) * .03, w = (.7305 - edge) / 2, x = Math.random(), can2 = p.bank >= bet * 2;
-    if (x < .047) { d = bet * 1.5; txt = 'dealt a blackjack'; }
+    if (x < .047) { d = bet * (OW.rules.bj65 ? 1.2 : 1.5); txt = 'dealt a blackjack'; }
     else if (x < .077) { d = can2 ? bet * 2 : bet; txt = can2 ? 'doubled down and won' : 'won'; }
     else if (x < .102) { d = can2 ? -bet * 2 : -bet; txt = can2 ? 'doubled down and lost' : 'lost'; }
     else if (x < .189) { d = 0; txt = 'pushed with the dealer'; }
@@ -1989,21 +2495,77 @@ function owRound(p) {
   d = r2(d); house = r2(house);
   p.bank = r2(p.bank + d); p.net = r2(p.bank - p.start); p.rounds++;
   if (d > 0) { p.wstreak++; p.lstreak = 0; } else if (d < 0) { p.lstreak++; p.wstreak = 0; }
-  const G = OW.games[g]; G.bets++; G.turn += bet; G.profit += house;
+  const G = OW.games[g]; G.bets++; G.turn += bet; G.profit += house; OW.day.tables = (OW.day.tables || 0) + house;
   OW.total = r2(OW.total + house); OW.day.profit += house; OW.day.bets++; OW.day.turn += bet;
+  // detailed statistics
+  const A = OW.all, S = owT(p.type), H = OW.hours[OW.hr], B = p.by[g] || (p.by[g] = { bets: 0, wag: 0, net: 0 }), ref = amt => ({ amt, name: p.name, id: p.id, g, t: OW.time });
+  p.wag += bet; p.maxBet = Math.max(p.maxBet, bet); p.peak = Math.max(p.peak, p.bank); p.low = Math.min(p.low, p.bank);
+  p.hist.push(p.bank); if (p.hist.length > 400) p.hist.shift();
+  B.bets++; B.wag += bet; B.net = r2(B.net + d);
+  if (d > 0) { p.won++; G.won++; A.won++; p.bigW = Math.max(p.bigW, d); G.big = Math.max(G.big, d); if (!A.bigWin || d > A.bigWin.amt) A.bigWin = ref(d); }
+  else if (d < 0) { p.lost++; G.lost++; A.lost++; p.bigL = Math.max(p.bigL, -d); if (!A.bigLoss || -d > A.bigLoss.amt) A.bigLoss = ref(-d); }
+  else { p.push++; A.push++; }
+  G.maxBet = Math.max(G.maxBet, bet); if (!A.maxBet || bet > A.maxBet.amt) A.maxBet = ref(bet);
+  A.bets++; A.turn += bet; S.bets++; S.turn += bet; S.profit += house; H.bets++; H.turn += bet; H.profit += house;
   owLog(p, g, `bet ${fmt(bet)} ${txt}`, d);
+  if (d >= 2000) owAlert('bad', 'Big win on the floor', `${p.name} just won ${fmt(Math.round(d))} at ${GAMES[g].toLowerCase()}.`, p.id);
+  else if (d <= -2000) owAlert('good', 'Big bet lost', `${p.name} just lost ${fmt(Math.round(-d))} at ${GAMES[g].toLowerCase()}.`, p.id);
+  if (p.type === 'Card counter' && !p.flag && OW.up.cams && p.rounds > 15) {
+    p.flag = true; owAlert('info', 'Cameras caught a card counter', `${p.name} was counting cards at blackjack and has been shown out, ${p.net > 0 ? signed(Math.round(p.net)) + ' up' : 'before winning anything'}.`, p.id);
+    p.out = true;
+  } else if (p.type === 'Card counter' && !p.flag && p.rounds > 40 && p.net > p.start * .2) {
+    p.flag = true; owAlert('info', 'Possible card counter', `Staff think ${p.name} is counting cards at blackjack and is ${signed(Math.round(p.net))} up. You can ask them to leave.`, p.id);
+  }
+}
+// things the owner can do to one guest
+function owGuestAct(p, act) {
+  if (!p || p.left) return;
+  if (act === 'drink' || act === 'room') owRep(act === 'room' ? .2 : .05);
+  if (act === 'drink') { owSpend(20); p.stay += 30; p.drinks = (p.drinks || 0) + 1; owLog(p, 'move', 'got a drink on the house and decided to stay a while longer', 0); toast(`${p.name} got a drink on the house (20)`); }
+  else if (act === 'room') { owSpend(300); p.stay += 150; p.goal *= 1.6; p.comped = true; owLog(p, 'move', 'was offered a free room for the night and is staying to play', 0); toast(`${p.name} accepted the free room (300)`); }
+  else if (act === 'out') { owLeave(p, 'asked to leave by you'); toast(`${p.name} was shown the door`); }
+  owRender();
+}
+function owPromo(k) {
+  const P = OW_PROMOS[k]; if (OW.promo[k]) return;
+  owSpend(P.cost); OW.promo[k] = OW.time + P.hours * 3600000;
+  alertMsg('info', P.name + ' started', `${P.about} Runs for ${P.hours} casino hours and cost you ${fmt(P.cost)}.`); owRender();
+}
+const owFixCost = () => owNice(800 * (1 + Object.keys(OW.up).reduce((a, k) => a + OW.up[k], 0) * .35));
+function owToggleGame(g) {
+  const c = OW.ctl[g];
+  if (c.fixAt) {                                              // broken: pay to have it repaired now
+    const cost = owFixCost();
+    if (owBank() < cost) { sfx.alertBad(); return toast(`A rush repair costs ${fmt(cost)} — the shared wallet has ${fmt(Math.max(0, Math.round(owBank())))}`); }
+    owSpend(cost, 'fines'); c.fixAt = 0; c.open = true; toast(`${GAMES[g]} was repaired right away for ${fmt(cost)}`); return owRender();
+  }
+  c.open = !c.open;
+  toast(c.open ? `${GAMES[g]} is open again` : `${GAMES[g]} is closed — guests there will move or leave`); owRender();
 }
 function owAct(p) {
   p.mins++;
-  if (Math.random() >= p.breakP && Math.random() < OW_PACE[p.game]) {     // otherwise they are watching, chatting or getting a drink
+  if (OW.ctl[p.game].open && p.bank < owMin(p.game)) {                     // they can no longer cover the lowest bet here
+    const ng = owChoose(p, p.T);
+    if (!ng) return owLeave(p, 'could not afford the lowest bet');
+    p.game = ng; p.lstreak = p.wstreak = 0; owLog(p, 'move', `moved over to ${GAMES[ng].toLowerCase()}, where the lowest bet is smaller`, 0);
+  }
+  if (!OW.ctl[p.game].open) {                                              // you closed their game
+    const ng = owChoose(p, p.T);
+    if (!ng) return owLeave(p, 'their game was closed');
+    p.game = ng; p.lstreak = p.wstreak = 0; owLog(p, 'move', `moved over to ${GAMES[ng].toLowerCase()} because their game closed`, 0);
+  }
+  if (OW.promo.drinks && Math.random() < .4) p.stay++;                     // free drinks keep people around
+  if (Math.random() >= p.breakP * (OW.promo.drinks ? .6 : 1) && Math.random() < OW_PACE[p.game]) {     // otherwise they are watching, chatting or getting a drink
     const opts = Object.keys(p.T.games);
-    if (opts.length > 1 && Math.random() < p.T.sw) {
-      p.game = owPick(opts.filter(g => g !== p.game), g => p.T.games[g]); p.lstreak = p.wstreak = 0;
+    const ng = opts.length > 1 && Math.random() < p.T.sw ? owChoose(p, p.T, p.game) : null;
+    if (ng) {
+      p.game = ng; p.lstreak = p.wstreak = 0;
       owLog(p, 'move', `moved over to ${GAMES[p.game].toLowerCase()}`, 0);
     }
     owRound(p);
   }
-  if (p.bank < 1) owLeave(p, 'lost everything');
+  if (p.out) owLeave(p, 'caught counting cards');
+  else if (p.bank < 1) owLeave(p, 'lost everything');
   else if (p.net <= -p.stop) owLeave(p, 'hit their loss limit');
   else if (p.net >= p.goal) owLeave(p, 'cashed out a winner');
   else if (p.mins >= p.stay) owLeave(p, p.net > 0 ? 'called it a night, ahead' : p.net < 0 ? 'called it a night, behind' : 'called it a night, even');
@@ -2012,75 +2574,547 @@ function owAct(p) {
 function owStep() {
   OW.time += 60000;
   const d = new Date(OW.time), hr = d.getHours(), wd = d.getDay();
-  if (hr === 0 && d.getMinutes() === 0) { OW.day = { profit: 0, bets: 0, turn: 0, visits: 0 }; OW.dayFactor = rnd(.8, 1.25); }   // a new day: some days are simply busier
+  OW.hr = hr;
+  if (hr === 0 && d.getMinutes() === 0) {                                                        // a new day: some days are simply busier
+    const y = OW.day;
+    const keep = owUpkeep(), rooms = OW.up.hotel ? 1500 : 0;                                      // the day's bills, and what the hotel rooms brought in
+    owSpend(keep, 'costs'); if (rooms) { OW.total = r2(OW.total + rooms); OW.day.profit += rooms; OW.all.side += rooms; y.side = (y.side || 0) + rooms; }
+    const rate = owTaxRate(), tax = y.profit > 0 ? Math.round(y.profit * rate) : 0;               // profit tax on a winning day; a losing day pays none
+    if (tax) { owSpend(tax, 'tax'); }
+    owAlert(y.profit >= 0 ? 'good' : 'bad', `${new Date(y.t).toLocaleDateString('en-GB', { weekday: 'long' })} is closed`,
+      `After ${fmt(keep)} running costs${tax ? ` and ${fmt(tax)} profit tax (${Math.round(rate * 100)}%)` : ''}, the day ${y.profit >= 0 ? 'made' : 'lost'} ${fmt(Math.abs(Math.round(y.profit)))} from ${y.visits} visits.`);
+    OW.day = owNewDay(); OW.dayFactor = rnd(.8, 1.25);
+  }
+  if (d.getMinutes() === 0) {                                                                    // once an hour: reputation drifts toward what the place deserves, and goals are checked
+    owRep((owRepBase() - OW.rep) * .02);
+    const T = OW.trouble;
+    if (!T.next) T.next = OW.time + rnd(2, 4) * 86400000;                                        // the first days are left in peace
+    else if (OW.time >= T.next) { T.next = OW.time + rnd(1.5, 4.5) * 86400000; owTrouble(); }
+    for (const g of OW_GK) { const c = OW.ctl[g]; if (c.fixAt && OW.time >= c.fixAt) { c.fixAt = 0; c.open = true; owAlert('good', `Trouble over: ${GAMES[g].toLowerCase()} is repaired`, 'The tables are open again.'); } }
+    if (Math.round(OW.all.mins / 60) % OW.longEvery === 0) {
+      OW.long.push(owSample());
+      if (OW.long.length > 800) { OW.long = OW.long.filter((_, i) => i % 2 === 0); OW.longEvery *= 2; }
+    }
+    for (const [id, name, f] of OW_GOALS) if (!OW.goals[id]) { const [v, t] = f(); if (v >= t) { OW.goals[id] = OW.time; owRep(2); owAlert('vip', 'Goal reached', name + '. Your reputation went up.'); } }
+  }
+  for (const k in OW.promo) if (OW.promo[k] && OW.time >= OW.promo[k]) { OW.promo[k] = 0; owAlert('info', OW_PROMOS[k].name + ' ended', 'You can start it again whenever you like.'); }
   const weekend = wd === 6 || wd === 0 || (wd === 5 && hr >= 17);
-  const lam = OW_PEAK * OW_HOURS[hr] * OW.dayFactor * (weekend ? 1.4 : 1);
+  const lam = OW_PEAK * (OW.up.hotel ? Math.max(OW_HOURS[hr], .35) : OW_HOURS[hr]) * OW.dayFactor * (weekend ? 1.4 : 1) * (OW.promo.ads ? 1.6 : 1) * (OW.promo.music ? 1.25 : 1)
+    * (.55 + OW.rep * .009) * (OW.up.club ? 1.1 : 1) * (OW.trouble.dark > OW.time ? 0 : OW.trouble.slow > OW.time ? .45 : 1);                                               // a good name brings people in
   let k = -1, pr = 1; const L = Math.exp(-lam); do { k++; pr *= Math.random(); } while (pr > L);    // random number of arrivals this minute
   for (let i = 0; i < k; i++) owArrive();
   for (const p of OW.in.slice()) owAct(p);
-  if (d.getMinutes() % 10 === 0) { OW.series.push({ t: OW.time, b: OW.total, n: OW.in.length }); if (OW.series.length > 1500) OW.series.shift(); }
+  const now = OW.in.length, H = OW.hours[hr];
+  H.mins++; H.guests += now; OW.all.mins++; OW.day.peak = Math.max(OW.day.peak, now);
+  const side = now * ((OW.up.bar ? .12 : 0) + (OW.up.food ? .2 : 0));                             // drinks and dinners
+  if (side) { OW.total += side; OW.day.profit += side; OW.all.side += side; OW.day.side = (OW.day.side || 0) + side; }
+  if (now > OW.all.peak) {
+    OW.all.peak = now; OW.all.peakT = OW.time;
+    if (now >= 15 && OW.time - OW.lastPeakAlert > 3 * 3600000) { OW.lastPeakAlert = OW.time; owAlert('vip', 'Busiest the casino has ever been', `${now} guests are inside right now.`); }
+  }
+  if (d.getMinutes() % 10 === 0) { OW.series.push(owSample()); if (OW.series.length > 2016) OW.series.shift(); }      // two weeks of samples
 }
+// everything that belongs to one casino (as opposed to the screen); OW_BLANK is a brand new, empty one
+const OW_SIM = ['time', 'seq', 'total', 'dayFactor', 'series', 'long', 'longEvery', 'trouble', 'days', 'day', 'hours', 'all', 'games', 'types', 'reasons', 'ctl', 'promo', 'rep', 'up', 'rules', 'goals', 'lastPeakAlert', 'lastFullAlert', 'in', 'gone', 'feed', 'topW', 'topL', 'hr'];
+const OW_BLANK = JSON.stringify(Object.fromEntries(OW_SIM.map(k => [k, OW[k]])));
 function owInit() {
-  const s = new Date(); s.setHours(15, 0, 0, 0); OW.time = s.getTime();
+  const s = new Date(); s.setHours(15, 0, 0, 0); OW.time = s.getTime(); OW.hr = 15; OW.day = owNewDay();
   OW.series.push({ t: OW.time, b: 0, n: 0 });
-  for (let i = 0; i < 180; i++) owStep();     // open the doors three hours earlier so the floor is not empty when you walk in
+  OW.quiet = true; for (let i = 0; i < 180; i++) owStep(); OW.quiet = false;     // open the doors three hours earlier so the floor is not empty when you walk in
 }
+/* Saving: the whole casino is written to this account every few seconds, so it is still there next time. Time only passes while the app is open. */
+const OW_KEEP = ['time', 'speed', 'seq', 'total', 'dayFactor', 'series', 'long', 'longEvery', 'trouble', 'days', 'hours', 'all', 'games', 'types', 'reasons', 'ctl', 'promo', 'rep', 'up', 'rules', 'goals', 'lastPeakAlert', 'lastFullAlert'];
+function owSnapshot() {
+  const slim = (p, nlog) => ({ ...p, T: undefined, log: p.log.slice(-nlog), hist: p.hist.slice(-120) });      // old guests keep only the end of their story, to stay small
+  const s = { v: 1 }; for (const k of OW_KEEP) s[k] = OW[k];
+  s.in = OW.in.map(p => slim(p, 80)); s.gone = OW.gone.slice(0, 120).map((p, i) => slim(p, i < 40 ? 30 : 8));
+  for (const k of ['charts', 'range', 'nch']) s[k] = OW[k];
+  s.topW = OW.topW.map(p => slim(p, 30)); s.topL = OW.topL.map(p => slim(p, 30)); s.feed = OW.feed.slice(-200);
+  return JSON.stringify(s);
+}
+function owRestore(str) {
+  try {
+    const s = JSON.parse(str); if (!s || s.v !== 1 || !isFinite(s.time) || !Array.isArray(s.in) || !s.days.length) return false;
+    const fix = p => { p.T = OW_TYPES.find(t => t.k === p.type); return p.T && p.log && p.hist ? p : null; };
+    for (const k of ['in', 'gone', 'topW', 'topL']) OW[k] = (s[k] || []).map(fix).filter(Boolean);
+    OW.feed = s.feed || [];
+    for (const k of OW_KEEP) if (s[k] != null) OW[k] = OW[k] && typeof OW[k] === 'object' && !Array.isArray(OW[k]) ? Object.assign(OW[k], s[k]) : s[k];     // merge, so things added in later versions keep their defaults
+    if (Array.isArray(s.charts)) OW.charts = s.charts; if (s.range != null) OW.range = s.range; if (s.nch) OW.nch = s.nch;
+    if (!OW.long.length) OW.long = OW.series.filter((_, i) => i % 6 === 0);      // casinos saved before the full history existed start it from what they still have
+    OW.day = OW.days[OW.days.length - 1]; OW.hr = new Date(OW.time).getHours(); OW.sel = null;
+    return true;
+  } catch { return false; }
+}
+/* Several casinos. The one on screen lives in OW; the others keep their state in CAS.list[i].st and are swapped into OW for a moment
+   whenever they need to advance or be saved. They all share one clock and one wallet. */
+const CAS = { list: [], cur: null, rot: 0, max: 12, booting: false };
+// Casinos are big, so they are saved in the browser's database (IndexedDB), which has far more room than the small settings store. If it is not available, the settings store is used instead.
+const IDB = {
+  db: null,
+  open() { return new Promise(res => { try { const r = indexedDB.open('lumen', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => { IDB.db = r.result; res(true); }; r.onerror = r.onblocked = () => res(false); } catch { res(false); } }); },
+  req(mode, f) { return new Promise(res => { if (!IDB.db) return res(null); try { const tx = IDB.db.transaction('kv', mode), r = f(tx.objectStore('kv')); tx.oncomplete = () => res(mode === 'readonly' ? r.result : true); tx.onerror = tx.onabort = () => res(null); } catch { res(null); } }); },
+  get: k => IDB.req('readonly', s => s.get(k)), set: (k, v) => IDB.req('readwrite', s => s.put(v, k)), del: k => IDB.req('readwrite', s => s.delete(k)), keys: () => IDB.req('readonly', s => s.getAllKeys())
+};
+const owKey = id => ACCT.id + '.owner.' + id;
+async function owGet(id) { return (IDB.db && await IDB.get(owKey(id))) || store.get('owner.' + id) || null; }       // falls back to where casinos were kept before
+function owPut(id, str) {
+  if (!IDB.db) return Promise.resolve(store.set('owner.' + id, str));
+  return IDB.set(owKey(id), str).then(ok => { if (ok && store.get('owner.' + id)) store.set('owner.' + id, ''); return !!ok; });
+}
+function owDel(id) { store.set('owner.' + id, ''); if (IDB.db) IDB.del(owKey(id)); }
+const owFresh = () => JSON.parse(OW_BLANK);
+function owPull(c) { for (const k of OW_SIM) c.st[k] = OW[k]; }       // OW -> casino
+function owPush(c) { for (const k of OW_SIM) OW[k] = c.st[k]; }       // casino -> OW
+function owWith(c, f) {                                               // run f as if casino c were the one on screen
+  const cur = CAS.cur; if (c === cur) return f();
+  owPull(cur); owPush(c); CAS.live = c; try { return f(); } finally { owPull(c); owPush(cur); CAS.live = null; }
+}
+const owOthers = () => CAS.list.filter(c => c !== CAS.cur);
+const owBank = () => { const live = CAS.live || CAS.cur; return CAS.list.reduce((a, c) => a + (c === live || !c.st ? 0 : c.st.total), OW.total); };       // the shared wallet: what all your casinos have made together
+async function owBoot() {
+  await IDB.open();
+  let idx = null; try { idx = JSON.parse(store.get('casinos') || 'null'); } catch {}
+  if (!idx || !Array.isArray(idx.list) || !idx.list.length) {
+    idx = { cur: 'c1', list: [{ id: 'c1', name: 'My first casino' }] };
+    const old = store.get('owner'); if (old) { store.set('owner.c1', old); store.set('owner', ''); }      // the casino saved before there could be several
+  }
+  const all = idx.list.map(c => ({ id: c.id, name: String(c.name || 'Casino'), st: null })), cur = all.find(c => c.id === idx.cur) || all[0];
+  const saved = {}; for (const c of all) saved[c.id] = await owGet(c.id);
+  for (const c of all) if (c !== cur) { owPush({ st: owFresh() }); const s = saved[c.id]; if (s && owRestore(s)) { c.st = {}; owPull(c); } }
+  owPush({ st: owFresh() }); const s = saved[cur.id]; if (!(s && owRestore(s))) owInit();
+  cur.st = {}; CAS.cur = cur; CAS.list = all.filter(c => c.st);
+  // casinos are saved a few seconds apart, so bring the ones that are behind up to the same minute
+  const tmax = Math.max(OW.time, ...owOthers().map(c => c.st.time));
+  for (const c of CAS.list) owWith(c, () => { OW.quiet = true; for (let i = 0; i < 6000 && OW.time < tmax; i++) owStep(); OW.quiet = false; });
+}
+function owSwitch(id) {
+  const c = CAS.list.find(x => x.id === id); if (!c || c === CAS.cur) return;
+  owPull(CAS.cur); owPush(c); CAS.cur = c; OW.sel = null; OW.hover = {}; OW.goneShow = 200; OW.tab = 'in';
+  $('#owTab').querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.t === 'in'));
+  toast(`Now looking at ${c.name}`); owSave(); owRender(); window.scrollTo(0, 0);
+}
+function owOpenCasino() {
+  if (CAS.list.length >= CAS.max) return toast(`You can run ${CAS.max} casinos at once — close one first`);
+  const cost = owCasCost();
+  if (owBank() < cost) { sfx.alertBad(); return toast(`Opening another casino costs ${fmt(cost)} — the shared wallet has ${fmt(Math.max(0, Math.round(owBank())))}`); }
+  let n = CAS.list.length + 1; while (CAS.list.some(c => c.name === 'Casino ' + n)) n++;
+  const t = OW.time, inh = { rules: { ...OW.rules }, ctl: OW_GK.map(g => [g, OW.ctl[g].open || !!OW.ctl[g].fixAt, OW.ctl[g].max, owMin(g)]) };      // the new casino starts with the rules of the one you are in
+  owSpend(cost, 'invest'); owPull(CAS.cur);
+  const c = { id: 'c' + Date.now().toString(36), name: 'Casino ' + n, st: owFresh() };
+  CAS.list.push(c); owPush(c); CAS.cur = c;
+  OW.rules = inh.rules; for (const [g, open, max, min] of inh.ctl) { OW.ctl[g].open = open; OW.ctl[g].max = max; OW.ctl[g].min = min; }
+  OW.time = t; OW.hr = new Date(t).getHours(); OW.day = owNewDay(); OW.series.push(owSample());       // it opens its doors right now, on the same clock, with an empty floor
+  OW.sel = null; OW.hover = {}; OW.goneShow = 200;
+  alertMsg('vip', c.name + ' is ready', `A brand new casino with an empty floor${cost ? ', bought for ' + fmt(cost) : ''}. Your other casinos keep running while you are here.`);
+  owSave(true); owRender(); window.scrollTo(0, 0);
+}
+function owRename() {
+  let name = null; try { name = prompt('A new name for this casino:', CAS.cur.name); } catch {}
+  name = name && name.trim().replace(/\s+/g, ' ').slice(0, 22); if (!name) return;
+  CAS.cur.name = name; owSave(); owRender();
+}
+function owSave(all) {
+  if (!CAS.cur || OW.noSave) return;
+  const put = c => owPut(c.id, owWith(c, owSnapshot));
+  const jobs = [put(CAS.cur).then(ok => { OW.saveOk = ok; OW.savedAt = Date.now(); })];
+  const bg = owOthers(); if (all === true) bg.forEach(c => jobs.push(put(c))); else if (bg.length) jobs.push(put(bg[CAS.rot++ % bg.length]));      // the others take turns, so saving never stalls the screen
+  owSave.done = Promise.all(jobs);
+  store.set('casinos', JSON.stringify({ cur: CAS.cur.id, list: CAS.list.map(c => ({ id: c.id, name: c.name })) }));
+  store.set('ownsum', JSON.stringify({ total: Math.round(owBank()), days: OW.days.length, rep: Math.round(OW.rep), n: CAS.list.length }));
+}
+setInterval(() => { if (OW.on) owSave(); }, 5000);
+window.addEventListener('beforeunload', () => owSave(true));
+window.addEventListener('pagehide', () => owSave(true));
+document.addEventListener('visibilitychange', () => { if (document.hidden && OW.on) owSave(true); });
 function owTick(now) {
+  if (!CAS.cur) return;                                       // still loading
   if (!OW.lastReal) OW.lastReal = now;
   OW.acc += Math.min(1, (now - OW.lastReal) / 1000) * OW.speed; OW.lastReal = now;
   let steps = Math.min(Math.floor(OW.acc), 240); OW.acc = steps >= 240 ? 0 : OW.acc - steps;
+  if (steps > 0) for (const c of owOthers()) owWith(c, () => { OW.quiet = true; for (let i = 0; i < steps; i++) owStep(); OW.quiet = false; });     // the casinos you are not looking at, quietly
   while (steps-- > 0) owStep();
-  if (now - OW.lastRender > 300) { OW.lastRender = now; if (view === 'owner') owRender(); }
+  if (now - OW.lastRender > 300) { OW.lastRender = now; if (view === 'owner') owRender(); else if (view === 'empire') emRender(); }
 }
+/* ---------- All casinos: every casino you own, added up ---------- */
+const EM = { geo: {}, hover: {}, vals: [], win: [], charts: ['bank', 'guests', 'tables', 'wager', 'hour', 'arr'] };
+try { const c = JSON.parse(store.get('emcharts') || 'null'); if (Array.isArray(c) && c.length === 6) EM.charts = c; } catch {}
+// one line for all casinos: at every moment, the sum of each casino's latest value (a casino that was not open yet counts as 0)
+function emSeries() {
+  const whole = !OW.range, lists = CAS.list.map(c => { const st = c === CAS.cur ? OW : c.st; return whole ? st.long.concat(st.series.slice(-1)) : st.series.slice(-OW.range); });
+  const ts = [...new Set(lists.flatMap(l => l.map(s => s.t)))].sort((a, b) => a - b), at = lists.map(() => 0), cur = lists.map(() => null);
+  return ts.map(t => {
+    const o = { t, b: 0, n: 0, rep: 0, tb: 0, sd: 0, tu: 0, bt: 0, vs: 0, g: [0, 0, 0, 0], pg: [0, 0, 0, 0] }; let open = 0;
+    lists.forEach((l, k) => {
+      while (at[k] < l.length && l[at[k]].t <= t) cur[k] = l[at[k]++];
+      const s = cur[k]; if (!s) return; open++;
+      for (const f of ['b', 'n', 'tb', 'sd', 'tu', 'bt', 'vs']) o[f] += s[f] || 0;
+      o.rep += s.rep == null ? 50 : s.rep; for (let i = 0; i < 4; i++) { o.g[i] += s.g ? s.g[i] : 0; o.pg[i] += s.pg ? s.pg[i] : 0; }
+    });
+    o.rep = open ? o.rep / open : 50;                 // reputation is averaged, everything else is added up
+    return o;
+  });
+}
+const EM_NAMES = { bank: 'Shared wallet', rep: 'Average reputation' };       // the two charts whose meaning changes when casinos are added up
+function emCharts() {
+  const whole = !OW.range, d = EM.win = emSeries(), back = whole ? 1 : 6;
+  const label = i => d[i] ? (whole || OW.range > 288 ? new Date(d[i].t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : owClock(d[i].t)) : '';
+  for (const [id, key] of [['#emRange', 'range'], ['#emNch', 'nch']]) $(id).querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.v === OW[key]));
+  document.querySelectorAll('#emCharts .panel').forEach((pn, k) => {
+    pn.hidden = k >= OW.nch; if (pn.hidden) return;
+    const key = OW_CH[EM.charts[k]] ? EM.charts[k] : (EM.charts[k] = 'bank'), D = OW_CH[key], sel = pn.querySelector('select');
+    if (sel.value !== key && document.activeElement !== sel) sel.value = key;
+    const vals = d.map((s, i) => { const v = D.f(s, d[Math.max(0, i - back)]); return isFinite(v) ? v : 0; });
+    EM.vals[k] = vals; pn.querySelector('.ow-now').textContent = vals.length ? D.fmt(vals[vals.length - 1]) : '';
+    EM.geo[k] = drawSeries(pn.querySelector('canvas'), vals.map(b => ({ b })), { axes: true, label, hover: EM.hover[k], color: D.c });
+  });
+}
+function emRender() {
+  if (!CAS.cur) return;
+  const rows = CAS.list.map(c => owWith(c, () => ({ c, name: c.name, n: OW.in.length, cap: owCap(), rep: OW.rep, today: OW.day.profit, total: OW.total, visits: OW.all.visits, bets: OW.all.bets, turn: OW.all.turn,
+    tables: owTables(), side: OW.all.side, costs: OW.all.costs, spent: OW.all.spent, fines: OW.all.fines || 0, tax: OW.all.tax || 0, invest: OW.all.invest, keep: owUpkeep(), ups: Object.keys(OW.up).reduce((a, k) => a + OW.up[k], 0),
+    days: OW.all.mins / 1440, peak: OW.all.peak, gone: OW.all.gone, ahead: OW.all.ahead, full: OW.all.full, games: OW.games, dayVisits: OW.day.visits })));
+  const sum = k => rows.reduce((a, r) => a + r[k], 0), T = {}; for (const k of ['n', 'cap', 'today', 'total', 'visits', 'bets', 'turn', 'tables', 'side', 'costs', 'tax', 'spent', 'fines', 'invest', 'keep', 'ups', 'gone', 'ahead', 'full', 'dayVisits']) T[k] = sum(k);
+  const d = new Date(OW.time), many = rows.length > 1;
+  $('#emClock').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + owClock(OW.time);
+  $('#emSub').textContent = `${rows.length} casino${many ? 's' : ''} · ${T.n} guests inside` + (OW.speed ? '' : ' · paused');
+  document.querySelectorAll('#owSpeed button, #emSpeed button').forEach(x => x.classList.toggle('on', +x.dataset.s === OW.speed));
+  $('#emTiles').innerHTML = [
+    ['Shared wallet', owH(T.total)], ['Profit today', owH(T.today)], ['Guests inside', `${T.n} / ${T.cap}`], ['Running costs', fmt(T.keep) + ' a day'], ['Profit tax', Math.round(owTaxRate() * 100) + '%'], ['Price level', '×' + owScale().toFixed(1)]
+  ].map(([l, v]) => `<div class="panel stat"><span class="lbl">${l}</span><b>${v}</b></div>`).join('');
+  const tot = (cells) => many ? [cells] : [];
+  $('#emCas').innerHTML = owTbl('1.4fr repeat(10,1fr)', ['Casino', 'Guests', 'Reputation', 'Today', 'Made so far', 'Visits', 'Bets', 'Wagered', 'Left ahead', 'Upgrades', 'Open for'],
+    rows.map(r => [`<b>${r === rows.find(x => x.c === CAS.cur) ? '● ' : ''}</b><b class="nm"></b>`, `${r.n} / ${r.cap}`, Math.round(r.rep), owH(r.today), owH(r.total), fmt(r.visits), fmt(r.bets), owM(r.turn), owPct(r.ahead, r.gone), r.ups, owDur(r.days * 1440)])
+      .concat(tot(['<b>All together</b>', `${T.n} / ${T.cap}`, Math.round(sum('rep') / rows.length), owH(T.today), owH(T.total), fmt(T.visits), fmt(T.bets), owM(T.turn), owPct(T.ahead, T.gone), T.ups, ''])));
+  [...$('#emCas').querySelectorAll('.rowl:not(.head)')].forEach((el, i) => { if (rows[i]) { el.dataset.cas = rows[i].c.id; el.querySelector('.nm').textContent = rows[i].name; } });     // names are typed by people, so they go in as text
+  const mrow = (name, r) => [name, owH(r.tables), owH(r.side), owH(-r.costs), owH(-r.tax), owH(-r.spent), owH(-r.fines), owH(-r.invest), `<b>${owH(r.total)}</b>`, fmt(r.keep)];
+  $('#emMoney').innerHTML = owTbl('1.4fr repeat(9,1fr)', ['Casino', 'From the tables', 'Bar, food, rooms', 'Running costs', 'Profit tax', 'Extras', 'Setbacks', 'Upgrades', 'Left over', 'Costs per day'],
+    rows.map(r => mrow('<span class="nm"></span>', r)).concat(tot(mrow('<b>All together</b>', T))));
+  [...$('#emMoney').querySelectorAll('.nm')].forEach((el, i) => { el.textContent = rows[i].name; });
+  $('#emGames').innerHTML = owTbl('1.2fr repeat(6,1fr)', ['Game', 'Playing now', 'Bets', 'Wagered', 'Average bet', 'House profit', 'Kept'],
+    OW_GK.map(g => { const G = { bets: 0, turn: 0, profit: 0 }; let now = 0;
+      for (const r of rows) { G.bets += r.games[g].bets; G.turn += r.games[g].turn; G.profit += r.games[g].profit; now += (r.c === CAS.cur ? OW : r.c.st).in.filter(p => p.game === g).length; }
+      return [GAMES[g], now, fmt(G.bets), owM(G.turn), G.bets ? owM(G.turn / G.bets) : '–', owH(G.profit), owPct(G.profit, G.turn)]; }));
+  emRulesUI();
+  emCharts();
+}
+// Rules for every casino: each control shows what all casinos have in common ("mixed" when they differ) and changes all of them at once
+const emStates = () => CAS.list.map(c => c === CAS.cur ? OW : c.st);
+const emAll = f => CAS.list.forEach(c => owWith(c, f));
+function emRulesUI() {
+  const S = emStates(), N = S.length, same = vals => vals.every(v => v === vals[0]);
+  $('#emRules').innerHTML = `<div><span class="lbl">Games and table limits, everywhere</span>` + OW_GK.map(g => {
+    const open = S.filter(s => s.ctl[g].open).length, broken = S.filter(s => s.ctl[g].fixAt).length, maxes = S.map(s => s.ctl[g].max), one = same(maxes), mins = S.map(s => s.ctl[g].min || 0), oneMin = same(mins), allOpen = open + broken === N;
+    return `<div class="ow-g${open ? '' : ' closed'}"><span>${GAMES[g]}<small>open in ${open} of ${N}${broken ? ' · broken in ' + broken : ''} · ${one && oneMin ? `bets from ${mins[0] ? fmt(mins[0]) : 'any amount'} to ${maxes[0] ? fmt(maxes[0]) : 'unlimited'}` : 'bet limits differ between casinos'}</small></span>` +
+      owBetSegs(g, oneMin ? mins[0] : null, one ? maxes[0] : null) +
+      `<button class="ow-tog${allOpen ? '' : ' off'}" data-g="${g}" data-tog="${allOpen ? 'close' : 'open'}">${allOpen ? 'Open' : open ? 'Mixed' : 'Closed'}</button></div>`; }).join('') + `</div>` +
+    `<div><span class="lbl" style="display:block; margin-bottom:8px">Bring people in, everywhere</span>` + Object.keys(OW_PROMOS).map(k => { const P = OW_PROMOS[k], off = S.filter(s => !s.promo[k]).length;
+      return `<button class="ow-promo${off ? '' : ' live'}" data-promo="${k}"><span>${P.name}<small>${off ? (off === N ? 'Start it in every casino.' : `Running in ${N - off} of ${N} — start it in the other ${off}.`) : 'Running in every casino.'}</small></span><em>${off ? fmt(P.cost * off) + ' · ' + P.hours + 'h' : 'running'}</em></button>`; }).join('') + `</div>`;
+  $('#emHouse').innerHTML = Object.keys(OW_RULES).map(k => { const on = S.filter(s => s.rules[k]).length;
+    return `<button class="switch${on === N ? ' on' : ''}" data-rule="${k}"><span>${OW_RULES[k].name}<small>${on && on < N ? `On in ${on} of ${N} casinos. ` : ''}${OW_RULES[k].about}</small></span><i></i></button>`; }).join('');
+}
+$('#emRules').addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return; sfx.click(); const g = b.dataset.g, n = CAS.list.length, every = n === 1 ? 'your casino' : `all ${n} casinos`;
+  if (b.dataset.promo) {
+    const k = b.dataset.promo, P = OW_PROMOS[k], off = emStates().filter(s => !s.promo[k]).length; if (!off) return;
+    if (owBank() < P.cost * off) { sfx.alertBad(); return toast(`${P.name} in ${off} casino${off === 1 ? '' : 's'} costs ${fmt(P.cost * off)} — the shared wallet has ${fmt(Math.max(0, Math.round(owBank())))}`); }
+    emAll(() => { if (!OW.promo[k]) { owSpend(P.cost); OW.promo[k] = OW.time + P.hours * 3600000; } });
+    alertMsg('info', P.name + ' started', `Running in ${every} for ${P.hours} casino hours. It cost ${fmt(P.cost * off)} in total.`);
+  } else if (b.dataset.tog) {
+    const open = b.dataset.tog === 'open'; emAll(() => { const c = OW.ctl[g]; if (!c.fixAt) c.open = open; });        // a broken game stays broken until it is repaired
+    toast(`${GAMES[g]} is now ${open ? 'open' : 'closed'} in ${every}`);
+  } else if (b.dataset.max != null) {
+    const v = +b.dataset.max; emAll(() => owSetBet(g, 'max', v)); toast(`${GAMES[g]}: highest bet is now ${v ? fmt(v) : 'unlimited'} in ${every}`);
+  } else if (b.dataset.min != null) {
+    const v = +b.dataset.min; emAll(() => owSetBet(g, 'min', v)); toast(`${GAMES[g]}: lowest bet is now ${v ? fmt(v) : 'not set'} in ${every}`);
+  }
+  emRender();
+});
+$('#emHouse').addEventListener('pointerdown', e => {
+  const b = e.target.closest('[data-rule]'); if (!b) return; sfx.click();
+  const k = b.dataset.rule, on = !emStates().every(s => s.rules[k]); emAll(() => { OW.rules[k] = on; });
+  toast(`${OW_RULES[k].name}: ${on ? 'on' : 'off'} in every casino`); emRender();
+});
+$('#emCas').addEventListener('pointerdown', e => { const r = e.target.closest('[data-cas]'); if (!r) return; sfx.click(); owSwitch(r.dataset.cas); show('owner'); owRender(); });
+$('#emRange').onclick = e => { const b = e.target.closest('[data-v]'); if (b) { OW.range = +b.dataset.v; emCharts(); } };
+$('#emSpeed').onclick = e => { const b = e.target.closest('[data-s]'); if (b) { OW.speed = +b.dataset.s; OW.acc = 0; emRender(); } };
+$('#emNch').onclick = e => { const b = e.target.closest('[data-v]'); if (b) { OW.nch = +b.dataset.v; emCharts(); } };
+$('#emCharts').innerHTML = [0, 1, 2, 3, 4, 5].map(k => `<div class="panel" data-slot="${k}"><div class="chart-head"><select class="ow-pick" data-slot="${k}" aria-label="What this chart shows">` +
+  Object.keys(OW_CH).map(c => `<option value="${c}">${EM_NAMES[c] || OW_CH[c].name}</option>`).join('') + `</select><span class="spacer"></span><b class="ow-now"></b></div>` +
+  `<div class="chart-wrap"><canvas class="ow-chart"></canvas><div class="tip"></div></div></div>`).join('');
+$('#emCharts').addEventListener('change', e => { const s = e.target.closest('select'); if (s) { EM.charts[+s.dataset.slot] = s.value; store.set('emcharts', JSON.stringify(EM.charts)); emCharts(); } });
+document.querySelectorAll('#emCharts .panel').forEach((pn, k) => {
+  const cv = pn.querySelector('canvas'), tip = pn.querySelector('.tip');
+  cv.addEventListener('mousemove', e => {
+    const g = EM.geo[k]; if (!g || g.n < 2) return;
+    const r = cv.getBoundingClientRect(), i = Math.max(0, Math.min(g.n - 1, Math.round((e.clientX - r.left - g.pl) / (g.w - g.pl - g.pr) * (g.n - 1))));
+    EM.hover[k] = i; emCharts(); const s = EM.win[i]; if (!s) return;
+    tip.innerHTML = `<b>${OW_CH[EM.charts[k]].fmt(EM.vals[k][i])}</b><br><span style="color:var(--muted)">${owDay(s.t)} ${owClock(s.t)}</span>`;
+    tip.style.opacity = 1; const x = g.X(i), tw = tip.offsetWidth; tip.style.left = (x + 14 + tw > g.w ? x - tw - 14 : x + 14) + 'px';
+  });
+  cv.addEventListener('mouseleave', () => { EM.hover[k] = null; tip.style.opacity = 0; emCharts(); });
+});
 function owRender() {
   const d = new Date(OW.time), hr = d.getHours(), n = OW.in.length;
   $('#owClock').textContent = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + owClock(OW.time);
   const part = hr < 6 ? 'Late night' : hr < 12 ? 'Morning' : hr < 17 ? 'Afternoon' : hr < 21 ? 'Evening' : 'Night';
-  $('#owSub').textContent = `${part} · ${n === 0 ? 'the floor is empty' : n < 5 ? 'quiet floor' : n < 12 ? 'steady floor' : n < 20 ? 'busy floor' : 'packed floor'}` + (OW.speed ? '' : ' · paused');
+  $('#owSub').textContent = `${CAS.cur.name} · ${part} · ${n === 0 ? 'the floor is empty' : n < 5 ? 'quiet floor' : n < 12 ? 'steady floor' : n < 20 ? 'busy floor' : 'packed floor'}` + (OW.speed ? '' : ' · paused');
+  $('#owSaved').textContent = !OW.savedAt ? `Saves by itself to the account “${ACCT.name}” every few seconds`
+    : OW.saveOk ? `Saved to the account “${ACCT.name}” at ${new Date(OW.savedAt).toLocaleTimeString('en-GB')}` : 'Could not save — storage is blocked or full in this browser';
+  $('#owSaved').style.color = OW.saveOk ? '' : 'var(--bad)';
   const tint = (el, v) => { el.textContent = signed(Math.round(v)); el.className = v > 0 ? 'good' : v < 0 ? 'bad' : ''; };
-  $('#owIn').textContent = n; tint($('#owToday'), OW.day.profit); tint($('#owTotal'), OW.total);
+  $('#owIn').textContent = n; tint($('#owToday'), OW.day.profit); tint($('#owTotal'), owBank());
+  owCasUI();
   $('#owBets').textContent = fmt(OW.day.bets); $('#owTurn').textContent = fmt(Math.round(OW.day.turn)); $('#owVisits').textContent = fmt(OW.day.visits);
   // guests
-  let sel = OW.sel == null ? null : OW.in.find(p => p.id === OW.sel) || OW.gone.find(p => p.id === OW.sel);
+  let sel = OW.sel == null ? null : owFind(OW.sel);
   if (OW.sel != null && !sel) OW.sel = null;
-  const list = OW.tab === 'in' ? OW.in.slice().reverse() : OW.gone;
-  const tabs = $('#owTab').children; tabs[0].textContent = `Inside (${n})`; tabs[1].textContent = `Left (${OW.gone.length})`;
+  const list = OW.tab === 'in' ? OW.in.slice().reverse() : OW.gone.slice(0, OW.goneShow);
+  const tabs = $('#owTab').children; tabs[0].textContent = `Inside (${n})`; tabs[1].textContent = `Left (${fmt(OW.all.gone)})`;
+  const more = OW.tab !== 'in' && OW.gone.length > OW.goneShow ? `<div class="ow-row" data-more="1" style="display:block; text-align:center; color:var(--accent)">Show 200 more (${fmt(OW.gone.length - OW.goneShow)} older guests)</div>`
+    : OW.tab !== 'in' && OW.all.gone > OW.gone.length ? `<div class="empty" style="padding:12px 10px">${fmt(OW.all.gone - OW.gone.length)} older guests are counted in the statistics, but their details are no longer kept.</div>` : '';
   $('#owList').innerHTML = `<div class="ow-row head"><span>Guest</span><span>${OW.tab === 'in' ? 'Playing' : 'Why they left'}</span><span>Has</span><span>Result</span></div>` +
     (list.length ? list.map(p => `<div class="ow-row${p.id === OW.sel ? ' sel' : ''}" data-id="${p.id}"><span><b>${p.name}</b><small>${p.type}</small></span>` +
-      `<span>${OW.tab === 'in' ? GAMES[p.game] : p.reason + `<small>${owClock(p.left)}</small>`}</span><span>${fmt(p.bank)}</span>` +
+      `<span>${OW.tab === 'in' ? GAMES[p.game] : p.reason + `<small>${owDay(p.left)} · ${owClock(p.left)}</small>`}</span><span>${fmt(p.bank)}</span>` +
       `<span class="${p.net > 0 ? 'bad' : p.net < 0 ? 'good' : ''}">${signed(p.net)}</span></div>`).join('')
-      : `<div class="empty" style="padding:14px 10px">${OW.tab === 'in' ? 'Nobody is in the casino right now.' : 'Nobody has left yet.'}</div>`);
+      : `<div class="empty" style="padding:14px 10px">${OW.tab === 'in' ? 'Nobody is in the casino right now.' : 'Nobody has left yet.'}</div>`) + more;
   // activity
   $('#owAll').hidden = !sel;
   $('#owFeedTitle').textContent = sel ? `Activity — ${sel.name}` : 'Activity — everyone';
   $('#owFeedSub').textContent = sel ? 'Everything this guest has done, newest first.' : 'Every bet, arrival and departure, newest first.';
-  $('#owCard').innerHTML = !sel ? '' : `<div class="ow-card"><b>${sel.name}</b> · ${sel.type} · ${sel.left ? 'left at ' + owClock(sel.left) + ' (' + sel.reason + ')' : 'playing ' + GAMES[sel.game].toLowerCase() + ' now'}` +
-    `<p>${sel.T.about}</p><div class="kv"><div><span class="lbl">Arrived</span><b>${owClock(sel.arrived)}</b></div><div><span class="lbl">Brought</span><b>${fmt(sel.start)}</b></div>` +
-    `<div><span class="lbl">Bets made</span><b>${sel.rounds}</b></div><div><span class="lbl">Their result</span><b class="${sel.net > 0 ? 'bad' : sel.net < 0 ? 'good' : ''}">${signed(sel.net)}</b></div></div></div>`;
+  $('#owCard').innerHTML = !sel ? '' : `<div class="ow-card"><b>${sel.name}</b> · ${sel.type} · ${sel.left ? 'left on ' + owDay(sel.left) + ' at ' + owClock(sel.left) + ' (' + sel.reason + ')' : 'playing ' + GAMES[sel.game].toLowerCase() + ' now'}` +
+    `<p>${sel.T.about}</p><div class="kv">` + [
+      ['Arrived', owClock(sel.arrived), new Date(sel.arrived).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })],
+      ['Time inside', owDur(sel.mins), sel.left ? 'left ' + owClock(sel.left) : 'plans about ' + owDur(sel.stay)],
+      ['Brought', fmt(sel.start), 'has ' + fmt(sel.bank) + ' now'],
+      ['Their result', `<u class="${sel.net > 0 ? 'bad' : sel.net < 0 ? 'good' : ''}" style="text-decoration:none">${signed(sel.net)}</u>`, owPct(sel.net, sel.start) + ' of their money'],
+      ['Bets made', sel.rounds, `${sel.won} won · ${sel.lost} lost · ${sel.push} even`],
+      ['Wagered', fmt(Math.round(sel.wag)), 'average bet ' + (sel.rounds ? fmt(Math.round(sel.wag / sel.rounds)) : '–')],
+      ['Usual bet', fmt(sel.base), 'biggest ' + fmt(sel.maxBet)],
+      ['Betting style', { flat: 'Steady', martingale: 'Doubles after a loss', hot: 'Raises when winning', tilt: 'Raises when losing', spread: 'Jumps with the count' }[sel.T.mode], 'current streak: ' + (sel.wstreak ? sel.wstreak + ' won' : sel.lstreak ? sel.lstreak + ' lost' : 'none')],
+      ['Biggest win', fmt(sel.bigW), 'in one bet'],
+      ['Biggest loss', fmt(sel.bigL), 'in one bet'],
+      ['Highest balance', fmt(sel.peak), 'lowest ' + fmt(sel.low)],
+      ['Walks away at', '+' + fmt(Math.round(sel.goal)), 'or at −' + fmt(Math.round(Math.min(sel.stop, sel.start)))]
+    ].map(([l, v, s]) => `<div><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join('') + `</div>` +
+    `<div class="by">${Object.keys(sel.by).map(g => `${GAMES[g]}: ${sel.by[g].bets} bets, ${fmt(Math.round(sel.by[g].wag))} wagered, result ${signed(sel.by[g].net)}`).join('<br>') || 'Has not placed a bet yet.'}</div>` +
+    (sel.left ? '' : `<div class="ow-acts"><button data-act="drink" title="They stay about half an hour longer">Buy them a drink · 20</button>` +
+      `<button data-act="room" title="They stay much longer and aim for a bigger win before leaving">Offer a free room · 300</button><button data-act="out" class="warn" title="They leave right now with what they have">Ask to leave</button></div>`) +
+    (sel.hist.length > 2 ? `<span class="lbl" style="display:block; margin-top:10px">Their money, bet by bet</span><canvas class="ow-chart" id="owGuestCv" style="height:110px; cursor:default"></canvas>` : '') + `</div>`;
+  if (sel && sel.hist.length > 2) drawSeries($('#owGuestCv'), sel.hist.map(b => ({ b })), { axes: true, label: i => 'bet ' + i, color: '#e7c27a' });
   const lines = (sel ? sel.log : OW.feed).slice(-70).reverse();
   $('#owFeed').innerHTML = lines.map(e => {
     const ev = e.g === 'arrive' || e.g === 'leave' || e.g === 'move';
-    return `<div class="ow-line${ev ? ' ev' : ''}"><span class="t">${owClock(e.t)}</span><span><b data-id="${e.id}">${e.name}</b> ${ev ? '' : `<span class="g">${GAMES[e.g]} ·</span> `}${e.txt}</span>` +
+    return `<div class="ow-line${ev ? ' ev' : ''}"><span class="t">${new Date(e.t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} ${owClock(e.t)}</span><span><b data-id="${e.id}">${e.name}</b> ${ev ? '' : `<span class="g">${GAMES[e.g]} ·</span> `}${e.txt}</span>` +
       `<span class="${e.d > 0 ? 'bad' : e.d < 0 ? 'good' : ''}">${e.g === 'arrive' || e.g === 'move' ? '' : signed(e.d)}</span></div>`;
   }).join('') || '<div class="empty">Nothing has happened yet.</div>';
-  // by game
-  $('#owGames').innerHTML = `<div class="rowl head"><span>Game</span><span>Playing now</span><span>Bets</span><span>Wagered</span><span>House profit</span><span>Kept</span></div>` +
-    Object.keys(OW.games).map(g => { const G = OW.games[g];
-      return `<div class="rowl"><span>${GAMES[g]}</span><span>${OW.in.filter(p => p.game === g).length}</span><span>${fmt(G.bets)}</span><span>${fmt(Math.round(G.turn))}</span>` +
-        `<span class="${G.profit > 0 ? 'good' : G.profit < 0 ? 'bad' : ''}">${signed(Math.round(G.profit))}</span><span>${G.turn ? (G.profit / G.turn * 100).toFixed(1) + '%' : '–'}</span></div>`; }).join('');
+  owCtlUI(); owBizUI();
+  owStats();
   owCharts();
 }
-function owCharts() {
-  OW.win = OW.series.slice(-288);
-  const label = i => OW.win[i] ? owClock(OW.win[i].t) : '';
-  OW.geo.p = drawSeries($('#owChartP'), OW.win, { axes: true, label, hover: OW.hover.p });
-  OW.geo.n = drawSeries($('#owChartN'), OW.win.map(s => ({ b: s.n })), { axes: true, label, hover: OW.hover.n, color: '#8b7cf6' });
+function owCtlUI() {
+  const left = t => owDur(Math.max(1, Math.round((t - OW.time) / 60000)));
+  $('#owCtl').innerHTML = `<div><span class="lbl">Games and table limits</span>` + Object.keys(OW.ctl).map(g => { const c = OW.ctl[g], n = OW.in.filter(p => p.game === g).length;
+    return `<div class="ow-g${c.open ? '' : ' closed'}"><span>${GAMES[g]}<small>${c.fixAt ? 'broken — repaired in ' + left(c.fixAt) : c.open ? n + (n === 1 ? ' guest' : ' guests') + ' playing' : 'closed'} · bets from ${owMin(g) ? fmt(owMin(g)) : 'any amount'} to ${c.max ? fmt(c.max) : 'unlimited'}</small></span>` + owBetSegs(g, owMin(g), c.max) +
+      `<button class="ow-tog${c.open ? '' : ' off'}" data-g="${g}" data-tog="1">${c.fixAt ? 'Repair · ' + fmt(owFixCost()) : c.open ? 'Open' : 'Closed'}</button></div>`; }).join('') + `</div>` +
+    `<div><span class="lbl" style="display:block; margin-bottom:8px">Bring people in</span>` + Object.keys(OW_PROMOS).map(k => { const P = OW_PROMOS[k], on = OW.promo[k];
+      return `<button class="ow-promo${on ? ' live' : ''}" data-promo="${k}"><span>${P.name}<small>${P.about}</small></span><em>${on ? left(on) + ' left' : fmt(P.cost) + ' · ' + P.hours + 'h'}</em></button>`; }).join('') +
+    `<small style="color:var(--muted); font-size:11.5px">Spent on extras so far: ${fmt(OW.all.spent)}${OW.all.turned ? ` · ${fmt(OW.all.turned)} people walked past because nothing they like was open` : ''}</small></div>`;
 }
-function owSetMode(m) {
+$('#owCtl').addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return; sfx.click();
+  if (b.dataset.promo) return owPromo(b.dataset.promo);
+  if (b.dataset.tog) return owToggleGame(b.dataset.g);
+  if (b.dataset.max != null) { owSetBet(b.dataset.g, 'max', +b.dataset.max); toast(`${GAMES[b.dataset.g]}: highest bet is now ${+b.dataset.max ? fmt(+b.dataset.max) : 'unlimited'}`); owRender(); }
+  if (b.dataset.min != null) { owSetBet(b.dataset.g, 'min', +b.dataset.min); toast(`${GAMES[b.dataset.g]}: lowest bet is now ${+b.dataset.min ? fmt(+b.dataset.min) : 'not set'}`); owRender(); }
+});
+$('#owCard').addEventListener('pointerdown', e => { const b = e.target.closest('[data-act]'); if (b) { sfx.click(); owGuestAct(owFind(OW.sel), b.dataset.act); } });
+const owPct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '–';
+const owDur = m => { m = Math.round(m); return m >= 60 ? Math.floor(m / 60) + 'h ' + (m % 60) + 'm' : m + ' min'; };
+const owM = v => fmt(Math.round(v));
+const owH = v => `<u class="${v > 0.5 ? 'good' : v < -0.5 ? 'bad' : ''}">${signed(Math.round(v))}</u>`;       // money from the house's side
+const owG = v => `<u class="${v > 0.5 ? 'bad' : v < -0.5 ? 'good' : ''}">${signed(Math.round(v))}</u>`;       // a guest's result (their win is your loss)
+const owDay = t => new Date(t).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+const owWho = p => `<b data-id="${p.id}">${p.name}</b>`;
+const owTbl = (cols, head, rows) => { const st = ` style="grid-template-columns:${cols}"`;
+  return `<div class="rowl head"${st}>${head.map(h => `<span>${h}</span>`).join('')}</div>` + rows.map(r => `<div class="rowl"${st}>${r.map(c => `<span>${c}</span>`).join('')}</div>`).join(''); };
+function owStats() {
+  const A = OW.all, tab = OW.stab, hrs = A.mins / 60;
+  let h = '', sub = 'Everything since you opened the doors.';
+  if (tab === 'over') {
+    const done = OW.days.filter(d => d !== OW.day), best = done.length ? done.reduce((a, b) => b.profit > a.profit ? b : a) : null, worst = done.length ? done.reduce((a, b) => b.profit < a.profit ? b : a) : null;
+    const ev = r => r ? [fmt(Math.round(r.amt)), `${r.name} · ${GAMES[r.g]} · ${owDay(r.t)} ${owClock(r.t)}`] : ['–', 'none yet'];
+    const tiles = [
+      ['Open for', owDur(A.mins), `${OW.days.length} casino day${OW.days.length === 1 ? '' : 's'}`],
+      ['Visits', fmt(A.visits), `${(A.visits / Math.max(hrs / 24, 1 / 24)).toFixed(0)} per day on average`],
+      ['Guests inside', OW.in.length, `record ${A.peak}` + (A.peakT ? ` · ${owDay(A.peakT)} ${owClock(A.peakT)}` : '')],
+      ['Average visit', A.gone ? owDur(A.stay / A.gone) : '–', `${fmt(A.gone)} guests have left`],
+      ['House profit', owH(OW.total), `${owM(hrs ? OW.total / hrs : 0)} per casino hour`],
+      ['Kept from bets', owPct(OW.total, A.turn), 'share of all money wagered'],
+      ['Profit per visit', A.visits ? owH(OW.total / A.visits) : '–', 'what an average guest leaves behind'],
+      ['Money walked in', owM(A.brought), `average ${A.visits ? owM(A.brought / A.visits) : '–'} per guest`],
+      ['Bets taken', fmt(A.bets), `${hrs ? (A.bets / hrs).toFixed(0) : 0} per casino hour`],
+      ['Wagered', owM(A.turn), `average bet ${A.bets ? owM(A.turn / A.bets) : '–'}`],
+      ['Guests\' bets won', owPct(A.won, A.bets), `${fmt(A.won)} won · ${fmt(A.lost)} lost · ${fmt(A.push)} even`],
+      ['Left ahead', owPct(A.ahead, A.gone), `${fmt(A.ahead)} ahead · ${fmt(A.behind)} behind`],
+      ['Biggest bet', ...ev(A.maxBet)], ['Biggest win by a guest', ...ev(A.bigWin)], ['Biggest loss by a guest', ...ev(A.bigLoss)],
+      ['Luckiest guest', OW.topW[0] ? '+' + owM(OW.topW[0].net) : '–', OW.topW[0] ? `${OW.topW[0].name} · ${OW.topW[0].type}` : 'none yet'],
+      ['Unluckiest guest', OW.topL[0] ? owM(-OW.topL[0].net) + ' lost' : '–', OW.topL[0] ? `${OW.topL[0].name} · ${OW.topL[0].type}` : 'none yet'],
+      ['Best day', best ? owH(best.profit) : '–', best ? owDay(best.t) : 'no full day yet'],
+      ['Worst day', worst ? owH(worst.profit) : '–', worst ? owDay(worst.t) : 'no full day yet'],
+      ['Spent on extras', owM(A.spent), 'drinks, rooms, music and adverts'],
+      ['Lost to setbacks', owM(A.fines || 0), `${OW.trouble.n} thing${OW.trouble.n === 1 ? '' : 's'} went wrong so far`],
+      ['Walked past', fmt(A.turned), 'people who found their game closed'],
+      ['Turned away', fmt(A.full), 'people who came when the casino was full'],
+      ['From the tables', owH(owTables()), 'what the games made, before costs'],
+      ['Bar, food and rooms', owH(A.side), 'income that does not depend on luck'],
+      ['Running costs paid', owM(A.costs), `${fmt(owUpkeep())} a day at the moment`],
+      ['Spent on upgrades', owM(A.invest), `${Object.keys(OW.up).reduce((a, k) => a + OW.up[k], 0)} bought so far`],
+      ['Reputation', Math.round(OW.rep) + ' / 100', `settles around ${owRepBase()} with what you have built`],
+      ['Today so far', owH(OW.day.profit), `${OW.day.visits} visits · busiest moment ${OW.day.peak} guests`]
+    ];
+    h = `<div class="ow-kv">${tiles.map(([l, v, s]) => `<div><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join('')}</div>`;
+  } else if (tab === 'games') {
+    sub = 'How each game is doing for you.';
+    h = owTbl('1.1fr repeat(9,1fr)', ['Game', 'Playing now', 'Bets', 'Wagered', 'Average bet', 'Biggest bet', 'Guests won', 'Biggest win', 'House profit', 'Kept'],
+      Object.keys(OW.games).map(g => { const G = OW.games[g];
+        return [GAMES[g], OW.in.filter(p => p.game === g).length, fmt(G.bets), owM(G.turn), G.bets ? owM(G.turn / G.bets) : '–', owM(G.maxBet), owPct(G.won, G.bets), owM(G.big), owH(G.profit), owPct(G.profit, G.turn)]; })
+        .concat([['<b>All games</b>', OW.in.length, fmt(A.bets), owM(A.turn), A.bets ? owM(A.turn / A.bets) : '–', A.maxBet ? owM(A.maxBet.amt) : '–', owPct(A.won, A.bets), A.bigWin ? owM(A.bigWin.amt) : '–', owH(owTables()), owPct(owTables(), A.turn)]]));
+  } else if (tab === 'types') {
+    sub = 'Which kinds of guest make or cost you money.';
+    h = owTbl('1.3fr repeat(9,1fr)', ['Guest type', 'Inside now', 'Visits', 'Avg brought', 'Avg visit', 'Bets', 'Wagered', 'Left ahead', 'House profit', 'Per visit'],
+      OW_TYPES.map(T => { const S = owT(T.k);
+        return [T.k, OW.in.filter(p => p.type === T.k).length, fmt(S.visits), S.visits ? owM(S.brought / S.visits) : '–', S.gone ? owDur(S.stay / S.gone) : '–', fmt(S.bets), owM(S.turn), owPct(S.ahead, S.gone), owH(S.profit), S.visits ? owH(S.profit / S.visits) : '–']; }));
+  } else if (tab === 'reasons') {
+    sub = 'Why guests walk out, and how they did.';
+    const rs = Object.keys(OW.reasons).sort((a, b) => OW.reasons[b].n - OW.reasons[a].n);
+    h = rs.length ? owTbl('1.6fr repeat(5,1fr)', ['Why they left', 'Guests', 'Share', 'Avg visit', 'Their avg result', 'Their total result'],
+      rs.map(r => { const R = OW.reasons[r]; return [r[0].toUpperCase() + r.slice(1), fmt(R.n), owPct(R.n, A.gone), owDur(R.stay / R.n), owG(R.net / R.n), owG(R.net)]; })) : '<div class="empty">Nobody has left yet.</div>';
+  } else if (tab === 'hours') {
+    sub = 'An average day, hour by hour.';
+    const mx = Math.max(1, ...OW.hours.map(H => H.mins ? H.guests / H.mins : 0));
+    h = owTbl('.7fr 2.2fr repeat(4,1fr)', ['Hour', 'Average guests inside', 'Arrivals / hour', 'Bets / hour', 'Wagered / hour', 'Profit / hour'],
+      OW.hours.map((H, i) => { const n = H.mins / 60, avg = H.mins ? H.guests / H.mins : 0;
+        return [String(i).padStart(2, '0') + ':00', n ? `<i class="ow-bar" style="width:${(avg / mx * 70).toFixed(1)}%"></i>${avg.toFixed(1)}` : '–', n ? (H.arr / n).toFixed(1) : '–', n ? (H.bets / n).toFixed(0) : '–', n ? owM(H.turn / n) : '–', n ? owH(H.profit / n) : '–']; }));
+  } else if (tab === 'days') {
+    sub = 'Every casino day so far, newest first.';
+    h = owTbl('1.3fr repeat(7,1fr)', ['Day', 'Visits', 'Busiest', 'Left ahead', 'Bets', 'Wagered', 'House profit', 'Kept'],
+      OW.days.slice().reverse().map(d => [owDay(d.t) + (d === OW.day ? ' (today)' : ''), fmt(d.visits), d.peak, owPct(d.ahead, d.left), fmt(d.bets), owM(d.turn), owH(d.profit), owPct(d.profit, d.turn)]));
+  } else if (tab === 'money') {
+    sub = 'Your books, day by day: what came in, what went out, and what was left. Running costs are paid at midnight.';
+    const row = (name, d) => [name, owH(d.tables || 0), owH(d.side || 0), owH(-(d.costs || 0)), owH(-(d.tax || 0)), owH(-(d.spent || 0)), owH(-(d.fines || 0)), owH(-(d.invest || 0)), `<b>${owH(d.profit)}</b>`];
+    h = owTbl('1.3fr repeat(8,1fr)', ['Day', 'From the tables', 'Bar, food, rooms', 'Running costs', 'Profit tax', 'Extras', 'Setbacks', 'Upgrades', 'Left over'],
+      [row('<b>All time</b>', { tables: owTables(), side: A.side, costs: A.costs, tax: A.tax, spent: A.spent, fines: A.fines, invest: A.invest, profit: OW.total })]
+        .concat(OW.days.slice().reverse().map(d => row(owDay(d.t) + (d === OW.day ? ' (today)' : ''), d))));
+  } else if (tab === 'goals') {
+    const done = OW_GOALS.filter(([id]) => OW.goals[id]).length;
+    sub = `Things to aim for, in your own time. ${done} of ${OW_GOALS.length} reached. Each one lifts your reputation.`;
+    h = OW_GOALS.map(([id, name, f]) => { const [v, t] = f(), ok = OW.goals[id], pc = ok ? 100 : Math.max(0, Math.min(100, v / t * 100));
+      return `<div class="ow-goal${ok ? ' done' : ''}"><span>${name}<small>${ok ? 'Reached on ' + owDay(ok) : fmt(Math.max(0, Math.floor(v))) + ' of ' + fmt(t)}</small></span><div class="track"><i style="width:${pc.toFixed(0)}%"></i></div><u class="${ok ? 'good' : ''}">${ok ? 'Done' : pc.toFixed(0) + '%'}</u></div>`; }).join('');
+  } else {
+    sub = 'The guests who won the most from you, and who lost the most. Click a name to see their whole visit.';
+    const t = (title, list) => `<h4>${title}</h4>` + (list.length ? owTbl('1.5fr 1.1fr 1.2fr repeat(4,1fr)', ['Guest', 'Type', 'When', 'Stayed', 'Brought', 'Bets', 'Their result'],
+      list.map(p => [owWho(p), p.type, owDay(p.left) + ' ' + owClock(p.left), owDur(p.mins), fmt(p.start), p.rounds, owG(p.net)])) : '<div class="empty">None yet.</div>');
+    h = t('Biggest winners', OW.topW) + t('Biggest losers', OW.topL);
+  }
+  $('#owStatSub').textContent = sub; $('#owStats').innerHTML = h;
+}
+function owCharts() {
+  const span = OW.range, whole = !span, last = OW.series[OW.series.length - 1];
+  OW.win = whole ? (last && (!OW.long.length || OW.long[OW.long.length - 1].t < last.t) ? OW.long.concat(last) : OW.long) : OW.series.slice(-span);
+  const off = OW.series.length - OW.win.length;
+  const label = i => OW.win[i] ? (whole || span > 288 ? new Date(OW.win[i].t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : owClock(OW.win[i].t)) : '';
+  for (const [id, key] of [['#owRange', 'range'], ['#owNch', 'nch']]) $(id).querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.v === OW[key]));
+  document.querySelectorAll('#owCharts .panel').forEach((pn, k) => {
+    pn.hidden = k >= OW.nch; if (pn.hidden) return;
+    const key = OW_CH[OW.charts[k]] ? OW.charts[k] : (OW.charts[k] = 'bank'), D = OW_CH[key], sel = pn.querySelector('select');
+    if (sel.value !== key && document.activeElement !== sel) sel.value = key;
+    const vals = OW.win.map((s, i) => { const v = D.f(s, whole ? OW.win[Math.max(0, i - 1)] : OW.series[Math.max(0, off + i - 6)]); return isFinite(v) ? v : 0; });     // the second sample is one hour earlier, for the per-hour charts
+    OW.vals[k] = vals; pn.querySelector('.ow-now').textContent = vals.length ? D.fmt(vals[vals.length - 1]) : '';
+    OW.geo[k] = drawSeries(pn.querySelector('canvas'), vals.map(b => ({ b })), { axes: true, label, hover: OW.hover[k], color: D.c });
+  });
+}
+async function owSetMode(m) {
   OW.on = m === 'owner'; document.body.classList.toggle('owner', OW.on); store.set('mode', m);
   $('#mode').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
-  if (OW.on) { if (!OW.time) owInit(); OW.lastReal = 0; show('owner'); owRender(); } else show('lobby');
+  if (OW.on) {
+    if (!CAS.cur) { if (CAS.booting) return; CAS.booting = true; await owBoot(); CAS.booting = false; if (!OW.on) return; }
+    $('#owSpeed').querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.s === OW.speed));
+    OW.lastReal = 0; show('owner'); owRender();
+  } else { owSave(true); show('lobby'); }
 }
+function owBizUI() {
+  const rep = Math.round(OW.rep), stars = Math.max(1, Math.round(rep / 20)), cap = owCap(), n = OW.in.length, bank = owBank();
+  const top = [
+    ['Reputation', `<span class="ow-stars">${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}</span> ${rep}`, rep >= 70 ? 'People talk about this place' : rep >= 45 ? 'A decent name in town' : 'Not many people know you yet'],
+    ['Room on the floor', `${n} / ${cap}`, n >= cap ? 'Full — people are being turned away' : OW.all.full ? `${fmt(OW.all.full)} turned away so far` : 'Nobody turned away yet'],
+    ['Running costs', fmt(owUpkeep()) + ' a day', `paid at midnight, plus ${Math.round(owTaxRate() * 100)}% tax on a winning day`],
+    ['Shared wallet', `<u class="${bank > 0 ? 'good' : bank < 0 ? 'bad' : ''}" style="text-decoration:none">${fmt(Math.round(bank))}</u>`, bank < 0 ? 'In the red — it will come back, the doors stay open'
+      : CAS.list.length > 1 ? `all your casinos together · this one added ${signed(Math.round(OW.total))}` : 'what you can spend on upgrades']
+  ];
+  $('#owBiz').innerHTML = `<div class="ow-kv ow-biz-top">${top.map(([l, v, s]) => `<div><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join('')}</div>` +
+    `<div class="ow-ups">` + Object.keys(OW_UPS).map(k => { const U = OW_UPS[k], l = OW.up[k], max = l >= U.costs.length, cost = max ? 0 : owPrice(U.costs[l]);
+      const lock = !max && OW.rep < U.need[l];
+      return `<button class="ow-up${max ? ' max' : bank < cost || lock ? ' poor' : ''}" data-up="${k}"><b>${U.name}</b>` + (U.costs.length > 1 ? `<span class="pips">${'●'.repeat(l)}${'○'.repeat(U.costs.length - l)}</span>` : '') +
+        `<small>${U.about(l)}</small><em>${max ? 'Owned' : lock ? fmt(cost) + ' · needs reputation ' + U.need[l] : fmt(cost) + (bank < cost ? ' · need ' + fmt(Math.ceil(cost - bank)) + ' more' : ' · buy')}</em></button>`; }).join('') + `</div>` +
+    `<div class="ow-rules">` + Object.keys(OW_RULES).map(k => `<button class="switch${OW.rules[k] ? ' on' : ''}" data-rule="${k}"><span>${OW_RULES[k].name}<small>${OW_RULES[k].about}</small></span><i></i></button>`).join('') + `</div>`;
+}
+$('#owBiz').addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return; sfx.click();
+  if (b.dataset.up) owBuy(b.dataset.up); else if (b.dataset.rule) owRule(b.dataset.rule);
+});
+let owResetArm = 0;
+$('#owReset').onclick = () => {
+  const c = CAS.cur, last = CAS.list.length === 1;
+  if (performance.now() - owResetArm > 4000) { owResetArm = performance.now(); return toast(`Click again to close ${c.name} for good` + (last ? ' and start over with a new one' : ' — its money leaves the shared wallet')); }
+  owResetArm = 0; owDel(c.id);
+  if (last) { OW.noSave = true; store.set('casinos', ''); store.set('ownsum', ''); return setTimeout(() => location.reload(), 250); }
+  CAS.list.splice(CAS.list.indexOf(c), 1); const n = CAS.list[0]; owPush(n); CAS.cur = n; OW.sel = null; OW.hover = {};
+  toast(`${c.name} was closed`); owSave(true); owRender();
+};
+$('#owOpen').onclick = owOpenCasino; $('#owRename').onclick = owRename;
+// the list of your casinos in the sidebar
+function owCasUI() {
+  $('#casList').innerHTML = `<span class="lbl">Your casinos</span>` + CAS.list.map(c => { const me = c === CAS.cur, st = me ? OW : c.st;
+    return `<button class="cas${me ? ' on' : ''}" data-cas="${c.id}"><i></i><span><b></b><small>${st.in.length} guests · ${signed(Math.round(st.total))}</small></span></button>`; }).join('') +
+    (CAS.list.length < CAS.max ? `<button class="cas add" data-cas="+"><i>+</i><span><b>Open another</b><small>${CAS.list.length ? 'costs ' + fmt(owCasCost()) : ''}</small></span></button>` : '');
+  [...$('#casList').querySelectorAll('.cas:not(.add)')].forEach((b, i) => { b.querySelector('i').textContent = CAS.list[i].name[0].toUpperCase(); b.querySelector('b').textContent = CAS.list[i].name; });
+}
+$('#casList').addEventListener('pointerdown', e => { const b = e.target.closest('[data-cas]'); if (!b) return; sfx.click(); if (b.dataset.cas === '+') owOpenCasino(); else owSwitch(b.dataset.cas); });
+
+/* ---------- accounts ---------- */
+function acctUI() {
+  $('#acctName').textContent = ACCT.name; $('#acctAv').textContent = ACCT.name[0].toUpperCase();
+  $('#acctList').innerHTML = ACCTS.map(a => {
+    let bal = LS.get(a.id + '.balance'), sum = null; try { sum = JSON.parse(LS.get(a.id + '.ownsum') || 'null'); } catch {}
+    const me = a.id === ACCT.id, info = `Wallet ${fmt(Math.round(me ? balance : bal === null ? 1000 : +bal))}` + (sum ? ` · casino ${fmt(sum.total)} in the bank after ${sum.days} day${sum.days === 1 ? '' : 's'}` : ' · no casino yet');
+    return `<div class="acct-row"><i></i><span><b></b><small>${info}</small></span>` + (me ? '<em>Playing now</em>' : `<button data-sw="${a.id}">Switch</button><button class="warn" data-del="${a.id}">Delete</button>`) + `</div>`;
+  }).join('');
+  [...$('#acctList').children].forEach((r, i) => { r.querySelector('i').textContent = ACCTS[i].name[0].toUpperCase(); r.querySelector('b').textContent = ACCTS[i].name; });    // names are typed by people, so they go in as text
+}
+async function acctSwitch(id) { owSave(true); await owSave.done; OW.noSave = true; LS.set('account', id); location.reload(); }      // wait until the casinos are safely written
+let acctDelArm = '';
+$('#acctBtn').onclick = () => { acctDelArm = ''; $('#acctHint').textContent = 'Switching reloads the app with that account\'s wallet, history and casino.'; acctUI(); $('#acctDlg').hidden = false; };
+$('#acctClose').onclick = () => { $('#acctDlg').hidden = true; };
+$('#acctDlg').addEventListener('pointerdown', e => { if (e.target === $('#acctDlg')) $('#acctDlg').hidden = true; });
+$('#acctList').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.sw) return acctSwitch(b.dataset.sw);
+  const id = b.dataset.del, a = ACCTS.find(x => x.id === id); if (!a) return;
+  if (acctDelArm !== id) { acctDelArm = id; b.textContent = 'Really delete?'; $('#acctHint').textContent = `Deleting ${a.name} removes its wallet, history and casino for good. Click again to confirm.`; return; }
+  for (const k of LS.keys()) if (k.startsWith(id + '.')) LS.del(k);
+  IDB.open().then(() => IDB.keys()).then(ks => { for (const k of ks || []) if (String(k).startsWith(id + '.')) IDB.del(k); });
+  ACCTS.splice(ACCTS.indexOf(a), 1); LS.set('accounts', JSON.stringify(ACCTS)); acctDelArm = ''; acctUI(); toast(`${a.name} was deleted`);
+};
+$('#acctNew').onsubmit = e => {
+  e.preventDefault();
+  const name = $('#acctInput').value.trim().replace(/\s+/g, ' ');
+  if (!name) return toast('Type a name first');
+  if (ACCTS.some(a => a.name.toLowerCase() === name.toLowerCase())) return toast('There is already an account with that name');
+  const a = { id: 'a' + Date.now().toString(36), name, made: Date.now() };
+  ACCTS.push(a); if (!LS.set('accounts', JSON.stringify(ACCTS))) { ACCTS.pop(); return toast('Could not save — this browser is blocking storage'); }
+  acctSwitch(a.id);
+};
+acctUI();
 $('#mode').onclick = e => { const b = e.target.closest('[data-m]'); if (b) owSetMode(b.dataset.m); };
 $('#owSpeed').onclick = e => {
   const b = e.target.closest('[data-s]'); if (!b) return;
@@ -2088,23 +3122,35 @@ $('#owSpeed').onclick = e => {
 };
 $('#owTab').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; OW.tab = b.dataset.t; $('#owTab').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); owRender(); };
 $('#owAll').onclick = () => { OW.sel = null; owRender(); };
+$('#owStatTab').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; OW.stab = b.dataset.t; $('#owStatTab').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); owStats(); };
+$('#owStats').addEventListener('pointerdown', e => {
+  const t = e.target.closest('[data-id]'); if (!t) return;
+  OW.sel = +t.dataset.id; sfx.click(); owRender(); $('#owFeedTitle').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 // the lists are redrawn several times a second, so selection listens for the press rather than a full click
 for (const id of ['#owList', '#owFeed']) $(id).addEventListener('pointerdown', e => {
+  if (e.target.closest('[data-more]')) { OW.goneShow += 200; sfx.click(); return owRender(); }
   const t = e.target.closest('[data-id]'); if (!t) return;
   const pid = +t.dataset.id; OW.sel = OW.sel === pid && id === '#owList' ? null : pid; sfx.click(); owRender();
 });
-for (const [key, cvSel, tipSel, val] of [['p', '#owChartP', '#owTipP', s => 'Profit ' + signed(Math.round(s.b))], ['n', '#owChartN', '#owTipN', s => s.n + (s.n === 1 ? ' guest' : ' guests')]]) {
-  const cv = $(cvSel), tip = $(tipSel);
+// the chart grid is built once; each chart has its own menu of what to show
+$('#owCharts').innerHTML = [0, 1, 2, 3, 4, 5].map(k => `<div class="panel" data-slot="${k}"><div class="chart-head"><select class="ow-pick" data-slot="${k}" aria-label="What this chart shows">` +
+  Object.keys(OW_CH).map(c => `<option value="${c}">${OW_CH[c].name}</option>`).join('') + `</select><span class="spacer"></span><b class="ow-now"></b></div>` +
+  `<div class="chart-wrap"><canvas class="ow-chart"></canvas><div class="tip"></div></div></div>`).join('');
+$('#owCharts').addEventListener('change', e => { const s = e.target.closest('select'); if (s) { OW.charts[+s.dataset.slot] = s.value; owCharts(); } });
+document.querySelectorAll('#owCharts .panel').forEach((pn, k) => {
+  const cv = pn.querySelector('canvas'), tip = pn.querySelector('.tip');
   cv.addEventListener('mousemove', e => {
-    const g = OW.geo[key]; if (!g || g.n < 2) return;
+    const g = OW.geo[k]; if (!g || g.n < 2) return;
     const r = cv.getBoundingClientRect(), i = Math.max(0, Math.min(g.n - 1, Math.round((e.clientX - r.left - g.pl) / (g.w - g.pl - g.pr) * (g.n - 1))));
-    OW.hover[key] = i; owCharts();
+    OW.hover[k] = i; owCharts();
     const s = OW.win[i]; if (!s) return;
-    tip.innerHTML = `<b>${val(s)}</b><br><span style="color:var(--muted)">${new Date(s.t).toLocaleDateString('en-GB', { weekday: 'short' })} ${owClock(s.t)}</span>`;
+    tip.innerHTML = `<b>${OW_CH[OW.charts[k]].fmt(OW.vals[k][i])}</b><br><span style="color:var(--muted)">${owDay(s.t)} ${owClock(s.t)}</span>`;
     tip.style.opacity = 1; const x = g.X(i), tw = tip.offsetWidth; tip.style.left = (x + 14 + tw > g.w ? x - tw - 14 : x + 14) + 'px';
   });
-  cv.addEventListener('mouseleave', () => { OW.hover[key] = null; tip.style.opacity = 0; owCharts(); });
-}
+  cv.addEventListener('mouseleave', () => { OW.hover[k] = null; tip.style.opacity = 0; owCharts(); });
+});
+for (const [id, key] of [['#owRange', 'range'], ['#owNch', 'nch']]) $(id).onclick = e => { const b = e.target.closest('[data-v]'); if (b) { OW[key] = +b.dataset.v; owCharts(); } };
 window.addEventListener('resize', () => { if (view === 'owner') owCharts(); });
 
 /* ================= ACCOUNT CHART ================= */
@@ -2223,7 +3269,7 @@ document.addEventListener('keydown', e => {
   const k = e.key.toLowerCase(), go = k === ' ' || k === 'enter';
   if (go && tag === 'BUTTON') return;   // the focused button handles it
   if (view === 'blackjack') {
-    if (k === 'h') bjHit(); else if (k === 's') bjStand(); else if (k === 'd') bjDouble();
+    if (k === 'h') bjHit(); else if (k === 's') bjStand(); else if (k === 'd') bjDouble(); else if (k === 'p') bjSplit();
     else if (go) { e.preventDefault(); bjDeal(); }
   } else if (go && view === 'roulette') { e.preventDefault(); $('#rlSpin').click(); }
   else if (go && view === 'drift') { e.preventDefault(); $('#drGo').click(); }
