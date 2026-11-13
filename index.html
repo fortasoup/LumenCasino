@@ -2729,12 +2729,21 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && OW.
 function owTick(now) {
   if (!CAS.cur) return;                                       // still loading
   if (!OW.lastReal) OW.lastReal = now;
-  OW.acc += Math.min(1, (now - OW.lastReal) / 1000) * OW.speed; OW.lastReal = now;
-  let steps = Math.min(Math.floor(OW.acc), 240); OW.acc = steps >= 240 ? 0 : OW.acc - steps;
+  // on screen a long pause between frames is ignored; hidden, the ticks come less often, so all the time that really passed is made up
+  const hid = document.hidden, cap = hid ? 1500 : 240;
+  OW.acc += Math.min(hid ? 120 : 1, (now - OW.lastReal) / 1000) * OW.speed; OW.lastReal = now;
+  let steps = Math.min(Math.floor(OW.acc), cap); OW.acc = steps >= cap && !hid ? 0 : Math.min(OW.acc - steps, 20000);
   if (steps > 0) for (const c of owOthers()) owWith(c, () => { OW.quiet = true; for (let i = 0; i < steps; i++) owStep(); OW.quiet = false; });     // the casinos you are not looking at, quietly
   while (steps-- > 0) owStep();
-  if (now - OW.lastRender > 300) { OW.lastRender = now; if (view === 'owner') owRender(); else if (view === 'empire') emRender(); }
+  if (!hid && now - OW.lastRender > 300) { OW.lastRender = now; if (view === 'owner') owRender(); else if (view === 'empire') emRender(); }      // nothing is drawn while nobody is looking
 }
+/* Keep the casinos running while the window is hidden, minimised or behind another tab. The screen's own loop stops then, so a timer takes over.
+   Browsers slow ordinary timers in hidden pages, so the ticks come from a small worker, which is not slowed; an ordinary timer is the fallback.
+   Closing the app stops everything: time only passes while the page is open. */
+function owBgTick() { if (document.hidden && OW.on) owTick(performance.now()); }
+try { const w = new Worker(URL.createObjectURL(new Blob(['setInterval(function(){postMessage(0)},250)'], { type: 'text/javascript' }))); w.onmessage = owBgTick; } catch {}
+setInterval(owBgTick, 1000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden && OW.on && CAS.cur) { OW.lastRender = 0; (view === 'empire' ? emRender : owRender)(); } });
 /* ---------- All casinos: every casino you own, added up ---------- */
 const EM = { geo: {}, hover: {}, vals: [], win: [], charts: ['bank', 'guests', 'tables', 'wager', 'hour', 'arr'] };
 try { const c = JSON.parse(store.get('emcharts') || 'null'); if (Array.isArray(c) && c.length === 6) EM.charts = c; } catch {}
