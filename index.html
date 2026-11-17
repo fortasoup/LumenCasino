@@ -136,7 +136,7 @@ h3{margin:0; font-size:15px; font-weight:600}
 .hero-bal{font-size:40px; font-weight:600; line-height:1.1; margin:6px 0 4px; font-variant-numeric:tabular-nums}
 .hero p{color:var(--muted); margin:10px 0 16px; line-height:1.5}
 .hero canvas{width:100%; height:170px; align-self:center}
-.games{display:grid; grid-template-columns:repeat(5,1fr); gap:14px}
+.games{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
 .game:nth-child(5) .art{background:radial-gradient(120% 120% at 50% 0%,#1d5a45,#10231f)}
 .game:nth-child(4) .art{background:radial-gradient(120% 120% at 50% 0%,#5a4520,#1f1a14)}
 .game{padding:0; overflow:hidden; cursor:pointer; transition:transform .25s,border-color .25s,box-shadow .25s; display:flex; flex-direction:column}
@@ -242,6 +242,11 @@ h3{margin:0; font-size:15px; font-weight:600}
 .mult b{font-size:84px; font-weight:300; transition:color .3s; text-shadow:0 0 44px rgba(79,209,197,.35)}
 .mult span{color:var(--muted); letter-spacing:.18em; font-size:12px; text-transform:uppercase; min-height:16px; font-weight:600}
 .mult.bad b{color:var(--bad); text-shadow:none} .mult.good b{color:var(--good)}
+.plk{height:540px} .plk canvas{width:100%; height:100%; display:block}
+.pl-stats{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px} .pl-stats canvas{width:100%; height:210px; display:block}
+@media (max-width:1100px){.pl-stats{grid-template-columns:1fr}}
+#plStop[hidden]{display:none} #plStop{border-color:var(--bad,#f87171); color:#f87171}
+.plr{width:100%; accent-color:var(--accent); margin-top:8px}
 .auto{display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--muted)}
 .auto input{width:84px; font:600 15px inherit; color:var(--text); background:var(--bg); border:1px solid var(--line2); border-radius:10px; padding:8px 10px; outline:none; text-align:center}
 .auto input:focus{border-color:var(--accent)}
@@ -509,6 +514,7 @@ body.owner #casList{display:flex}
     <button data-go="roulette"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3.5v6M12 14.5v6M3.5 12h6M14.5 12h6"/></svg><span>Roulette</span></button>
     <button data-go="drift"><svg class="ic" viewBox="0 0 24 24"><path d="M3 19c7-1 11.500-5 14-12"/><circle cx="18" cy="5" r="2"/></svg><span>Drift</span></button>
     <button data-go="coin"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.500 8.500v7M14.500 8.500v7M9.500 12h5"/></svg><span>Coin Flip</span></button>
+    <button data-go="plinko"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="4.500" r="1.500"/><circle cx="8" cy="10.500" r="1.500"/><circle cx="16" cy="10.500" r="1.500"/><circle cx="4.500" cy="16.500" r="1.500"/><circle cx="12" cy="16.500" r="1.500"/><circle cx="19.500" cy="16.500" r="1.500"/><path d="M3 21h18"/></svg><span>Plinko</span></button>
     <button data-go="poker"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3.500c3 3.500 7 5.500 7 9a3.500 3.500 0 0 1-6.500 1.800c.2 2 .8 3.500 2 5.200h-5c1.200-1.700 1.800-3.200 2-5.200A3.500 3.500 0 0 1 5 12.500c0-3.500 4-5.500 7-9z"/></svg><span>Poker</span></button>
     <div class="nav-sep"></div>
     <button data-go="account"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4v16h16M7.500 15l4-4 3 3 5-6"/></svg><span>Account</span></button>
@@ -556,6 +562,7 @@ body.owner #casList{display:flex}
         <div class="panel game" data-go="roulette"><div class="art"><span>◎</span></div><div class="body"><h2>Roulette</h2><p>Single-zero wheel with number, colour, dozen and column bets.</p><div class="tags"><span>European</span><span>Straight 35:1</span><span>37 pockets</span></div></div></div>
         <div class="panel game" data-go="drift"><div class="art"><span>✦</span></div><div class="body"><h2>Drift</h2><p>A light rises and the multiplier grows. Collect before it fades.</p><div class="tags"><span>Crash game</span><span>Auto-collect</span></div></div></div>
         <div class="panel game" data-go="coin"><div class="art"><span>◉</span></div><div class="body"><h2>Coin Flip</h2><p>A fair coin. Win 1.2× your bet or lose 0.8× of it. Includes a 1,000-flip auto-run.</p><div class="tags"><span>50 / 50</span><span>Win ×1.2</span><span>Loss ×0.8</span></div></div></div>
+        <div class="panel game" data-go="plinko"><div class="art"><span>⁂</span></div><div class="body"><h2>Plinko</h2><p>Drop balls through a field of pegs. Drop as many as you like at once and pick the rows and the risk.</p><div class="tags"><span>8–16 rows</span><span>3 risk levels</span><span>Up to 1,000×</span></div></div></div>
         <div class="panel game" data-go="poker"><div class="art"><span>♠</span></div><div class="body"><h2>Poker</h2><p>No-limit Texas Hold'em against 1 to 5 bots that bet, bluff and fold like people.</p><div class="tags"><span>Hold'em</span><span>1–5 bots</span></div></div></div>
       </div>
     </section>
@@ -632,6 +639,45 @@ body.owner #casList{display:flex}
           <div class="msg info" id="drMsg" style="font-size:14px">Set a bet and launch. Space also works.</div>
         </aside>
       </div>
+    </section>
+
+    <section id="plinko">
+      <div class="split">
+        <div>
+          <div class="panel sky plk"><canvas id="plC"></canvas></div>
+          <div class="hist" id="plHist" style="margin-top:12px"></div>
+        </div>
+        <aside class="panel dock">
+          <div id="plBet"></div>
+          <div><div class="auto"><span class="lbl">Rows of pegs</span><b id="plRowsV">12</b></div>
+            <input type="range" class="plr" id="plRows" min="8" max="16" step="1" value="12" aria-label="Rows of pegs"></div>
+          <div><span class="lbl">Risk level</span>
+            <div class="pick" id="plRisk" style="grid-template-columns:repeat(3,1fr); margin-top:8px">
+              <button data-r="low">Low<small>steady</small></button>
+              <button data-r="med" class="on">Medium<small>mixed</small></button>
+              <button data-r="high">High<small>wild</small></button>
+            </div></div>
+          <button class="btn primary big" id="plGo">Drop ball<kbd>Space</kbd></button>
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <label class="auto">Balls in a row <span><input id="plN" type="number" min="1" max="10000" step="1" value="10" aria-label="How many balls to drop in a row"></span></label>
+            <button class="btn big" id="plGoN" title="Drops this many balls one after another. You can just wait, or press Stop.">Drop 10 balls</button>
+            <button class="btn big" id="plStop" hidden title="Cancel the balls that have not been dropped yet">Stop</button>
+          </div>
+          <div class="msg info" id="plMsg" style="font-size:14px">Click as often as you like — every click drops another ball.</div>
+          <div id="plInfo" style="color:var(--muted); font-size:12.5px; line-height:1.5"></div>
+        </aside>
+      </div>
+      <div class="pl-stats">
+        <div class="panel">
+          <div class="chart-head"><div><h3>This session</h3><p id="plStSes"></p></div></div>
+          <canvas id="plChSes"></canvas>
+        </div>
+        <div class="panel">
+          <div class="chart-head"><div><h3>All time</h3><p id="plStAll"></p></div><span class="spacer"></span><button class="btn ghost" id="plReset" title="Forget the all-time Plinko counts for every board">Clear</button></div>
+          <canvas id="plChAll"></canvas>
+        </div>
+      </div>
+      <div style="color:var(--muted); font-size:12.5px; margin-top:10px">Bars show how many balls landed in each slot. The count is the same for low, medium and high risk; each number of rows keeps its own count.</div>
     </section>
 
     <section id="coin">
@@ -868,7 +914,7 @@ const ACCT = ACCTS.find(a => a.id === LS.get('account')) || ACCTS[0];
 const store = { get: k => LS.get(ACCT.id + '.' + k), set: (k, v) => LS.set(ACCT.id + '.' + k, v) };
 
 /* ---------- account history ---------- */
-const GAMES = { blackjack: 'Blackjack', roulette: 'Roulette', drift: 'Drift', coinflip: 'Coin Flip', poker: 'Poker', refill: 'Refill', start: 'Start' };
+const GAMES = { blackjack: 'Blackjack', roulette: 'Roulette', drift: 'Drift', coinflip: 'Coin Flip', plinko: 'Plinko', poker: 'Poker', refill: 'Refill', start: 'Start' };
 let balance = 1000;
 { const s = store.get('balance'); if (s !== null && isFinite(+s)) balance = +s; }
 let HIST = [];
@@ -1143,6 +1189,7 @@ const TITLES = {
   roulette: ['Roulette', 'Choose a chip, tap the table, spin.'],
   drift: ['Drift', 'The longer it rises, the more it pays — until it fades.'],
   coin: ['Coin Flip', 'A fair coin — 50 / 50.'],
+  plinko: ['Plinko', 'Drop a ball and see where the pegs send it.'],
   poker: ['Poker', "No-limit Texas Hold'em against the bots."],
   owner: ['Casino floor', 'You own the place. Watch the guests come, play and go.'],
   empire: ['All casinos', 'Everything you own, added up.'],
@@ -1752,6 +1799,180 @@ function drTick(now) {
   }
   c.globalAlpha = 1;
 }
+
+/* ================= PLINKO ================= */
+const PL = { rows: 12, risk: 'med', balls: [], queue: 0, nextAt: 0, hit: [], hist: [], n: 0, net: 0, tab: null, lastTick: 0, locked: null };
+{ const r = +store.get('pl.rows'), k = store.get('pl.risk'); if (r >= 8 && r <= 16) PL.rows = Math.round(r); if (['low', 'med', 'high'].includes(k)) PL.risk = k; }
+const PL_RISK = { low: { name: 'Low', c: .5, e0: 5.6, e1: 16 }, med: { name: 'Medium', c: .4, e0: 13, e1: 110 }, high: { name: 'High', c: .2, e0: 29, e1: 1000 } };
+const plBet = betControl($('#plBet'), 10, 'pl');
+const plCv = $('#plC'), plx = plCv.getContext('2d');
+// Prizes for every slot: small in the middle, big at the edges, tuned so the board pays back about 99% on average.
+function plTable(n, risk) {
+  const R = PL_RISK[risk], e = R.e0 * Math.pow(R.e1 / R.e0, (n - 8) / 8), P = [];
+  let c = 1; for (let k = 0; k <= n; k++) { P.push(c / Math.pow(2, n)); c = c * (n - k) / (k + 1); }
+  const rnd = m => m >= 100 ? Math.round(m / 10) * 10 : m >= 10 ? Math.round(m) : Math.round(m * 10) / 10;
+  const raw = p => P.map((_, k) => R.c + (e - R.c) * Math.pow(Math.abs(2 * k / n - 1), p));
+  const ret = m => m.reduce((s, x, k) => s + x * P[k], 0);
+  let lo = .3, hi = 60;
+  for (let i = 0; i < 60; i++) { const p = (lo + hi) / 2; if (ret(raw(p)) > .99) lo = p; else hi = p; }
+  const m = raw(hi).map(rnd);
+  // rounding moves the average a little: nudge the small prizes by 0.1 until it is back at 99%
+  let diff = .99 - ret(m); const mid = n / 2;
+  for (let pass = 0; pass < 4; pass++) for (let k = Math.floor(mid); k >= 0; k--) {
+    if (m[k] >= 10) break;
+    const pair = k === mid ? 1 : 2, step = .1 * P[k] * pair, r1 = x => Math.round(x * 10) / 10;
+    let cnt = Math.max(-2, Math.min(2, Math.trunc(diff / step)));
+    // keep the prizes rising from the middle outwards
+    while (cnt && (r1(m[k] + cnt * .1) < .1 || (k > 0 && r1(m[k] + cnt * .1) > m[k - 1]) || (k < Math.floor(mid) && r1(m[k] + cnt * .1) < m[k + 1]))) cnt -= Math.sign(cnt);
+    if (!cnt) continue;
+    m[k] = m[n - k] = r1(m[k] + cnt * .1); diff -= cnt * step;
+  }
+  return { m, P, rtp: ret(m) };
+}
+// where the balls landed: one count per board (rows + risk), for this session and for all time
+const PLS = { all: {}, ses: {}, dirty: true };
+try {
+  const o = JSON.parse(store.get('pl.stats') || '{}');
+  // counts are kept per number of rows; older saves were split by risk level too, so add those together
+  for (const k in o) { const r = parseInt(k), a = o[k]; if (!(r >= 8 && r <= 16) || !a || !Array.isArray(a.c) || a.c.length !== r + 1) continue;
+    const t = PLS.all[r]; if (!t) PLS.all[r] = a; else { t.c = t.c.map((v, i) => v + a.c[i]); t.n += a.n; t.bet += a.bet; t.net += a.net; t.best = Math.max(t.best, a.best); } }
+} catch {}
+function plStat(o, make) {
+  const k = PL.rows; let s = o[k];
+  if (!s || !Array.isArray(s.c) || s.c.length !== PL.rows + 1) { s = { c: new Array(PL.rows + 1).fill(0), n: 0, bet: 0, net: 0, best: 0 }; if (make) o[k] = s; }
+  return s;
+}
+function plStatsDraw() {
+  const n = PL.rows, m = PL.tab.m, dpr = window.devicePixelRatio || 1;
+  for (const [cid, tid, o] of [['#plChSes', '#plStSes', PLS.ses], ['#plChAll', '#plStAll', PLS.all]]) {
+    const st = plStat(o), cv = $(cid), w = cv.clientWidth, h = cv.clientHeight;
+    $(tid).textContent = st.n ? `${fmt(st.n)} ball${st.n === 1 ? '' : 's'} · ${fmt(st.bet)} bet · ${signed(Math.round(st.net * 100) / 100)} result · best ${plX(st.best)}`
+      : `No balls yet on ${n} rows.`;
+    if (!w) continue;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+    const padB = 22, padT = 20, bw = (w - 8) / (n + 1), H = h - padB - padT;
+    const peak = Math.max(1, ...st.c);
+    c.strokeStyle = 'rgba(255,255,255,.08)'; c.beginPath(); c.moveTo(0, h - padB + .5); c.lineTo(w, h - padB + .5); c.stroke();
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    for (let k = 0; k <= n; k++) {
+      const x = 4 + k * bw, v = st.c[k], bh = v / peak * H, d = Math.abs(2 * k / n - 1), hue = 185 - 185 * Math.pow(d, .8);
+      c.fillStyle = `hsla(${hue},70%,52%,.9)`;
+      if (v) { c.beginPath(); if (c.roundRect) c.roundRect(x + 2, h - padB - Math.max(2, bh), bw - 4, Math.max(2, bh), [4, 4, 0, 0]); else c.rect(x + 2, h - padB - Math.max(2, bh), bw - 4, Math.max(2, bh)); c.fill(); }
+      c.font = `600 ${Math.max(8, Math.min(11, bw * .3))}px "Segoe UI",sans-serif`;
+      c.fillStyle = `hsl(${hue},70%,62%)`; c.fillText(bw < 40 ? String(m[k] >= 100 ? Math.round(m[k]) : m[k]) : plX(m[k]), x + bw / 2, h - padB / 2 + 2);
+      if (v) { c.fillStyle = 'rgba(207,224,255,.9)'; c.fillText(v >= 10000 ? Math.round(v / 1000) + 'k' : v, x + bw / 2, h - padB - Math.max(2, bh) - 9); }
+    }
+  }
+}
+const plX = m => (m >= 100 ? Math.round(m) : m) + '×';
+function plSetup() {
+  PL.tab = plTable(PL.rows, PL.risk); PL.hit = []; PLS.dirty = true;
+  $('#plRows').value = PL.rows; $('#plRowsV').textContent = PL.rows;
+  $('#plRisk').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.r === PL.risk));
+  const t = PL.tab;
+  $('#plInfo').innerHTML = `${PL.rows} rows, ${PL_RISK[PL.risk].name.toLowerCase()} risk: prizes from <b>${plX(Math.min(...t.m))}</b> to <b>${plX(t.m[0])}</b>. The top prize lands about 1 time in ${fmt(Math.pow(2, PL.rows - 1))}. On average the board pays back ${(t.rtp * 100).toFixed(1)}% of what you bet.`;
+}
+function plLock() {
+  const sb = $('#plStop'), q = PL.queue > 0;
+  if (sb.hidden === q) sb.hidden = !q;
+  if (q) { const t = `Stop — ${PL.queue} ball${PL.queue === 1 ? '' : 's'} still to drop`; if (sb.textContent !== t) sb.textContent = t; }
+  const on = PL.balls.length > 0 || q; if (on === PL.locked) return; PL.locked = on;
+  $('#plRows').disabled = on; $('#plRisk').querySelectorAll('button').forEach(b => b.disabled = on);
+  $('#plRisk').style.opacity = $('#plRows').style.opacity = on ? .5 : 1;
+  $('#plRisk').title = $('#plRows').title = on ? 'Wait for the balls to land before changing the board' : '';
+}
+function plOne(now) {
+  const bet = plBet.value; if (!checkBet(bet)) return false;
+  if (PL.balls.length >= 150) { toast('That is a lot of balls — let a few land first'); return false; }
+  setBalance(balance - bet);
+  const n = PL.rows, path = []; let k = 0;
+  for (let i = 0; i < n; i++) { const r = Math.random() < .5 ? 1 : 0; path.push(r); k += r; }
+  PL.balls.push({ path, k, bet, t0: now, dur: 150 + Math.random() * 40, seg: -1, jx: (Math.random() - .5) * .3, hue: 40 + Math.random() * 20 });
+  sfx.drop(); return true;
+}
+function plDrop(count) {
+  const now = performance.now();
+  if (!plOne(now)) return;
+  if (count > 1) { PL.queue += count - 1; PL.nextAt = now + 110; }
+  plLock();
+}
+function plLand(b) {
+  const m = PL.tab.m[b.k], win = Math.round(b.bet * m * 100) / 100, d = win - b.bet;
+  setBalance(balance + win); record('plinko', d);
+  PL.n++; PL.net += d; PL.hit[b.k] = performance.now();
+  for (const o of [PLS.ses, PLS.all]) { const st = plStat(o, true); st.c[b.k]++; st.n++; st.bet += b.bet; st.net = Math.round((st.net + d) * 100) / 100; st.best = Math.max(st.best, m); }
+  store.set('pl.stats', JSON.stringify(PLS.all)); PLS.dirty = true;
+  PL.hist.unshift(m); PL.hist.length = Math.min(PL.hist.length, 18);
+  $('#plHist').innerHTML = PL.hist.map(x => `<span class="pill" style="color:${x < 1 ? 'var(--muted)' : x < 3 ? 'var(--accent)' : 'var(--gold)'}">${plX(x)}</span>`).join('');
+  say('#plMsg', `${plX(m)} — ${fmt(win)} back (${signed(d)}). ${PL.n} ball${PL.n === 1 ? '' : 's'} so far, ${signed(Math.round(PL.net * 100) / 100)} in total.`, d > 0 ? 'good' : d < 0 ? 'bad' : 'info');
+  if (m >= 10) sfx.collect(); else if (m >= 1) tone(660 + Math.min(m, 9) * 90, .12, { type: 'triangle', vol: .07 });
+  else tone(240, .09, { type: 'triangle', vol: .05 });
+}
+function plTick(now) {
+  if (PL.queue > 0 && now >= PL.nextAt) { PL.nextAt = now + (PL.queue > 50 ? 60 : 110); if (plOne(now)) PL.queue--; else PL.queue = 0; }
+  const n = PL.rows;
+  for (let i = PL.balls.length - 1; i >= 0; i--) {
+    const b = PL.balls[i], s = Math.floor((now - b.t0) / b.dur);
+    if (s > b.seg) {
+      b.seg = s;
+      if (s >= 1 && s <= n && view === 'plinko' && now - PL.lastTick > 45) { PL.lastTick = now; sfx.tick(.25); }
+      if (s > n) { PL.balls.splice(i, 1); plLand(b); }
+    }
+  }
+  plLock();
+  const dpr = window.devicePixelRatio || 1, w = plCv.clientWidth, h = plCv.clientHeight;
+  if (!w || view !== 'plinko') return;
+  if (PLS.dirty) { PLS.dirty = false; plStatsDraw(); }
+  if (plCv.width !== Math.round(w * dpr) || plCv.height !== Math.round(h * dpr)) { plCv.width = Math.round(w * dpr); plCv.height = Math.round(h * dpr); }
+  const c = plx; c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+  const top = 46, binH = 30, gy = (h - top - binH - 26) / n, gap = Math.min((w - 24) / (n + 2), gy * 1.25), cx = w / 2;
+  const pegR = Math.max(2, gap * .085), ballR = Math.max(4, gap * .2), binY = top + n * gy;
+  // pegs
+  c.fillStyle = 'rgba(207,224,255,.75)';
+  for (let i = 0; i < n; i++) for (let j = 0; j < i + 3; j++) { c.beginPath(); c.arc(cx + (j - (i + 2) / 2) * gap, top + i * gy, pegR, 0, TAU); c.fill(); }
+  // prize slots
+  const m = PL.tab.m, fs = Math.max(8, Math.min(13, gap * .3));
+  c.font = `700 ${fs}px "Segoe UI",sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+  for (let k = 0; k <= n; k++) {
+    const d = Math.abs(2 * k / n - 1), hue = 185 - 185 * Math.pow(d, .8), age = PL.hit[k] ? (now - PL.hit[k]) / 350 : 9, pop = age < 1 ? Math.sin(age * Math.PI) * 6 : 0;
+    const x = cx + (k - n / 2) * gap, bw = gap - 4, y = binY + 4 + pop;
+    c.fillStyle = `hsla(${hue},70%,${age < 1 ? 62 : 50}%,${age < 1 ? 1 : .85})`;
+    c.beginPath(); if (c.roundRect) c.roundRect(x - bw / 2, y, bw, binH, 6); else c.rect(x - bw / 2, y, bw, binH); c.fill();
+    c.fillStyle = '#0b1020'; c.fillText(gap < 40 ? String(m[k] >= 100 ? Math.round(m[k]) : m[k]) : plX(m[k]), x, y + binH / 2 + .5);
+  }
+  // balls
+  const pt = (b, i) => {
+    if (i < 0) return [cx + b.jx * gap, top - gy * 1.1];
+    if (i >= n) return [cx + (b.k - n / 2) * gap, binY + 4];
+    let k = 0; for (let j = 0; j < i; j++) k += b.path[j];
+    return [cx + (k - i / 2) * gap, top + i * gy - pegR - ballR];
+  };
+  for (const b of PL.balls) {
+    const s = (now - b.t0) / b.dur, seg = Math.min(Math.floor(s), n), f = Math.min(1, s - seg);
+    const A = pt(b, seg - 1), B = pt(b, seg);
+    const x = A[0] + (B[0] - A[0]) * f;
+    const y = seg === 0 ? A[1] + (B[1] - A[1]) * f * f : A[1] + (B[1] - A[1]) * f - gy * .42 * 4 * f * (1 - f) * (seg >= n ? .6 : 1);
+    c.beginPath(); c.arc(x, y, ballR, 0, TAU);
+    c.fillStyle = `hsl(${b.hue},95%,62%)`; c.shadowColor = `hsl(${b.hue},95%,60%)`; c.shadowBlur = 10; c.fill(); c.shadowBlur = 0;
+    c.beginPath(); c.arc(x - ballR * .3, y - ballR * .3, ballR * .35, 0, TAU); c.fillStyle = 'rgba(255,255,255,.7)'; c.fill();
+  }
+  c.fillStyle = 'rgba(142,155,181,.85)'; c.font = '500 12px "Segoe UI",sans-serif'; c.textAlign = 'left';
+  c.fillText(PL.balls.length ? `${PL.balls.length} ball${PL.balls.length === 1 ? '' : 's'} falling` : 'Ready', 14, 18);
+}
+$('#plGo').onclick = () => plDrop(1);
+const plCount = () => Math.max(1, Math.min(10000, Math.floor(+$('#plN').value) || 1));
+function plCountUI() { const n = plCount(); $('#plGoN').textContent = `Drop ${fmt(n)} ball${n === 1 ? '' : 's'}`; }
+{ const n = +store.get('pl.n'); if (n >= 1) $('#plN').value = Math.min(10000, Math.floor(n)); plCountUI(); }
+$('#plN').oninput = () => { plCountUI(); store.set('pl.n', plCount()); };
+$('#plN').onblur = () => { $('#plN').value = plCount(); plCountUI(); };
+$('#plGoN').onclick = () => plDrop(plCount());
+$('#plStop').onclick = () => { if (!PL.queue) return; const left = PL.queue; PL.queue = 0; plLock(); toast(`Stopped — ${left} ball${left === 1 ? '' : 's'} not dropped`); };
+$('#plRows').oninput = e => { if (PL.balls.length || PL.queue) return; PL.rows = +e.target.value; store.set('pl.rows', PL.rows); plSetup(); };
+$('#plRisk').onclick = e => { const b = e.target.closest('[data-r]'); if (!b || PL.balls.length || PL.queue) return; PL.risk = b.dataset.r; store.set('pl.risk', PL.risk); plSetup(); };
+$('#plReset').onclick = () => { PLS.all = {}; store.set('pl.stats', '{}'); PLS.dirty = true; toast('All-time Plinko counts cleared'); };
+window.addEventListener('resize', () => { PLS.dirty = true; });
+plSetup();
 
 /* ================= POKER (no-limit Texas Hold'em) ================= */
 const PK_NAMES = ['Mira', 'Kato', 'Juno', 'Odin', 'Vex', 'Nyx', 'Sol', 'Rhea', 'Taro', 'Ivo', 'Lux', 'Zed'];
@@ -3238,7 +3459,7 @@ function refreshAccount() {
   if (hoverIdx != null && hoverIdx >= pts.length) hoverIdx = null;
   chartGeo = drawSeries($('#chart'), pts, { axes: true, hover: hoverIdx });
   $('#byGame').innerHTML = `<div class="rowl head"><span>Game</span><span>Rounds</span><span>Won</span><span>Net</span></div>` +
-    ['blackjack', 'roulette', 'drift', 'coinflip', 'poker'].map(g => {
+    ['blackjack', 'roulette', 'drift', 'coinflip', 'plinko', 'poker'].map(g => {
       const r = rounds.filter(p => p.g === g), nt = r.reduce((s, p) => s + p.d, 0), wn = r.filter(p => p.d > 0).length;
       return `<div class="rowl"><span>${GAMES[g]}</span><span>${r.length}</span><span>${r.length ? Math.round(wn / r.length * 100) + '%' : '–'}</span><span class="${nt > 0 ? 'good' : nt < 0 ? 'bad' : ''}">${r.length ? signed(nt) : '–'}</span></div>`;
     }).join('');
@@ -3283,6 +3504,7 @@ document.addEventListener('keydown', e => {
   } else if (go && view === 'roulette') { e.preventDefault(); $('#rlSpin').click(); }
   else if (go && view === 'drift') { e.preventDefault(); $('#drGo').click(); }
   else if (go && view === 'coin') { e.preventDefault(); cfFlip(); }
+  else if (go && view === 'plinko') { e.preventDefault(); plDrop(1); }
   else if (view === 'poker' && PK.seated) {
     if (k === 'f') $('#pkFold').click(); else if (k === 'c') $('#pkCall').click(); else if (k === 'r') $('#pkRaise').click(); else if (k === 'h') $('#pkRankBtn').click();
     else if (go) { e.preventDefault(); pkHand(); }
@@ -3296,6 +3518,7 @@ if (store.get('mode') === 'owner') owSetMode('owner');   // come back in the mod
 function loop(now) {
   if (view === 'roulette' || RL.spinning) rlTick(now);
   if (view === 'drift' || DR.phase === 'flying') drTick(now);
+  if (view === 'plinko' || PL.balls.length || PL.queue) plTick(now);
   if (OW.on) owTick(now);
   requestAnimationFrame(loop);
 }
